@@ -18,7 +18,7 @@ public class Args {
     private final Set<Character> argsFound = new HashSet<>();
     private int currentArgument;
     private char errorArgumentId = '\0';
-    private String errorParameter = "TILT";
+    private String errorParameter = "TILT!";
     private ErrorCode errorCode = ErrorCode.OK;
 
     enum ErrorCode {
