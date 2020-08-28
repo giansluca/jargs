@@ -4,8 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.text.ParseException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -22,15 +20,16 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldBeValidIfNoArguments() throws ParseException, ArgsException {
+    void itShouldBeValidIfNoSchemaAndArguments() throws ArgsException {
         // Given
         String schema = "";
-        String[] args = {};
+        String[] args = new String[0];
 
         // When
         underTest = new Args(schema, args);
 
         // Then
+        assertThat(underTest.cardinality()).isEqualTo(0);
         assertThat(underTest.isValid()).isTrue();
         assertThat(underTest.usage()).isBlank();
     }
@@ -45,14 +44,14 @@ class ArgsTest {
         // When
         // Then
         assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ParseException.class)
+                .isInstanceOf(ArgsException.class)
                 .hasMessageContaining(
                         String.format("Bad character: %s in Args format: %s", "1", schema));
     }
 
 
     @Test
-    void itShouldSetBooleanValue() throws ParseException, ArgsException {
+    void itShouldSetBooleanValue() throws ArgsException {
         // Given
         String schema = "l";
         String[] args = {"-l"};
@@ -81,7 +80,7 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldSetStringValue() throws ParseException, ArgsException {
+    void itShouldSetStringValue() throws ArgsException {
         // Given
         String name = "gians";
         String schema = "n*";
@@ -126,7 +125,7 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldSetIntegerValue() throws ParseException, ArgsException {
+    void itShouldSetIntegerValue() throws ArgsException {
         // Given
         String giveNumber1 = "99";
         String giveNumber2 = "100";
@@ -189,7 +188,7 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldReturnTheCorrectArgumentsNumber() throws ParseException, ArgsException {
+    void itShouldReturnTheCorrectArgumentsNumber() throws ArgsException {
         // Given
         String schema = "f*,s*";
         String[] args = {"-f", "first", "-s", "second"};
@@ -217,17 +216,4 @@ class ArgsTest {
                 .hasMessageContaining("TILT: Should not get here");
     }
 
-    @Test
-    void itShouldReturnBlankErrorMessageIfTestErrorCodeIsSet() throws Exception {
-        // Given
-        String schema = "";
-        String[] args = {};
-
-        // When
-        underTest = new Args(schema, args);
-        underTest.setErrorCode(Args.ErrorCode.TEST_CODE);
-
-        // Then
-        assertThat(underTest.errorMessage()).isBlank();
-    }
 }
