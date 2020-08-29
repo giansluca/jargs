@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.gmdev.jargs.ArgsException.ErrorCode.INVALID_INTEGER;
+import static org.gmdev.jargs.ArgsException.ErrorCode.UNEXPECTED_ARGUMENT;
 
 class ArgsTest {
 
@@ -20,7 +22,7 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldBeValidIfNoSchemaAndArguments() throws ArgsException {
+    void itShouldBeValidIfNoSchemaAndNoArguments() throws ArgsException {
         // Given
         String schema = "";
         String[] args = new String[0];
@@ -35,9 +37,40 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldThrowIfSchemaElementIsNoALetter() {
+    void itShouldThrowIfNoSchemaAndOneArgument() {
         // Given
+        String schema = "";
+        String[] args = {"-x"};
 
+        try {
+            // When
+            underTest = new Args(schema, args);
+        } catch (ArgsException e) {
+            // Then
+            assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
+            assertThat(e.getErrorArgumentId()).isEqualTo('x');
+        }
+    }
+
+    @Test
+    void itShouldThrowIfNoSchemaAndMultipleArguments() {
+        // Given
+        String schema = "";
+        String[] args = {"-x", "-y"};
+
+        try {
+            // When
+            underTest = new Args(schema, args);
+        } catch (ArgsException e) {
+            // Then
+            assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
+            assertThat(e.getErrorArgumentId()).isEqualTo('x');
+        }
+    }
+
+    @Test
+    void itShouldThrowIfSchemaElementIsNotALetter() {
+        // Given
         String schema = "1";
         String[] args = {"-1"};
 
@@ -49,6 +82,39 @@ class ArgsTest {
                         String.format("Bad character: %s in Args format: %s", "1", schema));
     }
 
+    @Test
+    void itShouldThrowIfArgumentIdDoesNotMatchSchemaElement() {
+        // Given
+        String schema = "l";
+        String[] args = {"-x"};
+
+        ArgsException e = new ArgsException(
+                ArgsException.ErrorCode.UNEXPECTED_ARGUMENT,
+                'x',
+                null
+        );
+
+        // When
+        // Then
+        assertThatThrownBy(() -> new Args(schema, args))
+                .isInstanceOf(ArgsException.class)
+                .isEqualToComparingFieldByField(e);
+    }
+
+    @Test
+    void itShouldThrowIfStringElementIsMissing() {
+        // Given
+        String schema = "n*";
+        String[] args = {"-n"};
+
+        ArgsException e = new ArgsException(ArgsException.ErrorCode.MISSING_STRING);
+
+        // When
+        // Then
+        assertThatThrownBy(() -> new Args(schema, args))
+                .isInstanceOf(ArgsException.class)
+                .isEqualToComparingFieldByField(e);
+    }
 
     @Test
     void itShouldSetBooleanValue() throws ArgsException {
@@ -62,21 +128,6 @@ class ArgsTest {
         // Then
         assertThat(underTest.getBoolean('l')).isTrue();
         assertThat(underTest.isValid()).isTrue();
-    }
-
-    @Test
-    void itShouldNotSetBooleanValue() throws Exception {
-        // Given
-        String schema = "l";
-        String[] args = {"-x"};
-
-        // When
-        underTest = new Args(schema, args);
-
-        // Then
-        assertThat(underTest.getBoolean('x')).isFalse();
-        assertThat(underTest.isValid()).isFalse();
-        assertThat(underTest.errorMessage()).contains("unexpected");
     }
 
     @Test
@@ -95,96 +146,34 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldNotSetStringValue() throws Exception {
+    void itShouldIThrowIfIntegerIsNotANumber() {
         // Given
-        String name = "gians";
-        String schema = "n*";
-        String[] args = {"-x", name};
+        String schema = "n#";
+        String[] args = {"-n", "a"};
+
+        ArgsException e = new ArgsException(INVALID_INTEGER, "a");
 
         // When
-        underTest = new Args(schema, args);
-
         // Then
-        assertThat(underTest.getString('x')).isBlank();
-        assertThat(underTest.isValid()).isFalse();
-        assertThat(underTest.errorMessage()).contains("unexpected");
-    }
-
-    @Test
-    void itShouldBeNotValidIfStringIsMissing() throws Exception {
-        // Given
-        String schema = "n*";
-        String[] args = {"-n"};
-
-        // When
-        underTest = new Args(schema, args);
-
-        // Then
-        assertThat(underTest.errorMessage())
-                .isEqualTo(String.format("Could not find string parameter for -%c", 'n'));
+        assertThatThrownBy(() -> new Args(schema, args))
+                .isInstanceOf(ArgsException.class)
+                .isEqualToComparingFieldByField(e);
     }
 
     @Test
     void itShouldSetIntegerValue() throws ArgsException {
         // Given
-        String giveNumber1 = "99";
-        String giveNumber2 = "100";
-        int expectedNumber1 = 99;
-        int expectedNumber2 = 100;
-        String schema = "n#,m#";
-        String[] args = {"-n", giveNumber1, "-m", giveNumber2};
+        String giveNumber = "99";
+        int expectedNumber = 99;
+        String schema = "n#";
+        String[] args = {"-n", giveNumber};
 
         // When
         underTest = new Args(schema, args);
 
         // Then
-        assertThat(underTest.getInt('n')).isEqualTo(expectedNumber1);
-        assertThat(underTest.getInt('m')).isEqualTo(expectedNumber2);
+        assertThat(underTest.getInt('n')).isEqualTo(expectedNumber);
         assertThat(underTest.isValid()).isTrue();
-    }
-
-    @Test
-    void itShouldNotSetIntegerValue() throws Exception {
-        String number = "99";
-        String schema = "n#";
-        String[] args = {"-x", number};
-
-        // When
-        underTest = new Args(schema, args);
-
-        // Then
-        assertThat(underTest.getInt('x')).isEqualTo(0);
-        assertThat(underTest.isValid()).isFalse();
-        assertThat(underTest.errorMessage()).contains("unexpected");
-    }
-
-    @Test
-    void itShouldBeNotValidIfIntegerIsMissing() throws Exception {
-        // Given
-        String schema = "n#";
-        String[] args = {"-n"};
-
-        // When
-        underTest = new Args(schema, args);
-
-        // Then
-        assertThat(underTest.errorMessage())
-                .isEqualTo(String.format("Could not find integer parameter for -%c", 'n'));
-    }
-
-    @Test
-    void itShouldBeNotValidIfIntegerIsNotANumber() throws Exception {
-        // Given
-        String number = "a";
-        String schema = "n#";
-        String[] args = {"-n", number};
-
-        // When
-        underTest = new Args(schema, args);
-
-        // Then
-        assertThat(underTest.errorMessage())
-                .isEqualTo(String.format("Invalid integer parameter for -%c", 'n'));
     }
 
     @Test

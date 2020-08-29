@@ -5,7 +5,7 @@ import org.gmdev.jargs.ArgsException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class IntegerArgumentMarshaler extends ArgumentMarshaler {
+public class IntegerArgumentMarshaler implements ArgumentMarshaler {
 
     private int intValue = 0;
 

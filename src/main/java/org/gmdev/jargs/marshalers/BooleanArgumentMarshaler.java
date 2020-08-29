@@ -4,7 +4,7 @@ import org.gmdev.jargs.ArgsException;
 
 import java.util.Iterator;
 
-public class BooleanArgumentMarshaler extends ArgumentMarshaler {
+public class BooleanArgumentMarshaler implements ArgumentMarshaler {
 
     private boolean booleanValue = false;
 

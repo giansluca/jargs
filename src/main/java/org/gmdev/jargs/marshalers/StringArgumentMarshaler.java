@@ -5,7 +5,7 @@ import org.gmdev.jargs.ArgsException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class StringArgumentMarshaler extends ArgumentMarshaler {
+public class StringArgumentMarshaler implements ArgumentMarshaler {
 
     private String stringValue = "";
 

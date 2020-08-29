@@ -6,11 +6,37 @@ public class ArgsException extends Exception {
     private String errorParameter = "TILT!";
     private ErrorCode errorCode = ErrorCode.OK;
 
-    public ArgsException() {
-    }
+    public ArgsException() {}
 
     public ArgsException(String message) {
         super(message);
+    }
+
+    public ArgsException(ErrorCode errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public ArgsException(ErrorCode errorCode, String errorParameter) {
+        this.errorCode = errorCode;
+        this.errorParameter = errorParameter;
+    }
+
+    public ArgsException(ErrorCode errorCode, char errorArgumentId, String errorParameter) {
+        this.errorCode = errorCode;
+        this.errorArgumentId = errorArgumentId;
+        this.errorParameter = errorParameter;
+    }
+
+    public char getErrorArgumentId() {
+        return errorArgumentId;
+    }
+
+    public String getErrorParameter() {
+        return errorParameter;
+    }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
     }
 
     public enum ErrorCode {
@@ -23,14 +49,14 @@ public class ArgsException extends Exception {
         INVALID_DOUBLE("invalid double"),
         TEST_CODE("test code");
 
-        private final String errorCode;
+        private final String description;
 
-        ErrorCode(String errorCode) {
-            this.errorCode = errorCode;
+        ErrorCode(String description) {
+            this.description = description;
         }
 
-        public String getErrorCode() {
-            return errorCode;
+        public String getDescription() {
+            return description;
         }
     }
 }

@@ -4,7 +4,7 @@ import org.gmdev.jargs.ArgsException;
 
 import java.util.Iterator;
 
-public abstract class ArgumentMarshaler {
+public interface ArgumentMarshaler {
 
     public abstract void set(Iterator<String> currentArgument) throws ArgsException;
 

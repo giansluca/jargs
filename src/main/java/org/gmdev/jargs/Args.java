@@ -4,6 +4,9 @@ import org.gmdev.jargs.marshalers.ArgumentMarshaler;
 
 import java.util.*;
 
+import static org.gmdev.jargs.ArgsException.ErrorCode.INVALID_INTEGER;
+import static org.gmdev.jargs.ArgsException.ErrorCode.MISSING_INTEGER;
+
 public class Args {
 
     private final String schema;
@@ -29,10 +32,7 @@ public class Args {
             return;
 
         parseSchema();
-        try {
-            parseArguments();
-        } catch (ArgsException e) {
-        }
+        parseArguments();
     }
 
     private void parseSchema() throws ArgsException {
@@ -94,9 +94,10 @@ public class Args {
         if (setArgument(argChar)) {
             argsFound.add(argChar);
         } else {
-            unexpectedArguments.add(argChar);
-            errorCode = ArgsException.ErrorCode.UNEXPECTED_ARGUMENT;
             valid = false;
+            throw new ArgsException(
+                    ArgsException.ErrorCode.UNEXPECTED_ARGUMENT,
+                    argChar, null);
         }
     }
 
@@ -188,7 +189,7 @@ public class Args {
         return valid;
     }
 
-    public class BooleanArgumentMarshaler_2 extends ArgumentMarshaler {
+    public class BooleanArgumentMarshaler_2 implements ArgumentMarshaler {
         private boolean booleanValue = false;
 
         @Override
@@ -202,7 +203,7 @@ public class Args {
         }
     }
 
-    public class IntegerArgumentMarshaler_2 extends ArgumentMarshaler {
+    public class IntegerArgumentMarshaler_2 implements ArgumentMarshaler {
         private int intValue = 0;
 
         @Override
@@ -212,12 +213,9 @@ public class Args {
                 parameter = currentArgument.next();
                 intValue = Integer.parseInt(parameter);
             } catch (NoSuchElementException e) {
-                errorCode = ArgsException.ErrorCode.MISSING_INTEGER;
-                throw new ArgsException();
+                throw new ArgsException(MISSING_INTEGER);
             } catch (NumberFormatException e) {
-                errorParameter = parameter;
-                errorCode = ArgsException.ErrorCode.INVALID_INTEGER;
-                throw new ArgsException();
+                throw new ArgsException(INVALID_INTEGER, parameter);
             }
         }
 
@@ -227,7 +225,7 @@ public class Args {
         }
     }
 
-    public class StringArgumentMarshaler_2 extends ArgumentMarshaler {
+    public class StringArgumentMarshaler_2 implements ArgumentMarshaler {
         private String stringValue = "";
 
         @Override
@@ -235,8 +233,8 @@ public class Args {
             try {
                 stringValue = currentArgument.next();
             } catch (NoSuchElementException e) {
-                errorCode = ArgsException.ErrorCode.MISSING_STRING;
-                throw new ArgsException();
+                throw new ArgsException(
+                        ArgsException.ErrorCode.MISSING_STRING);
             }
         }
 
