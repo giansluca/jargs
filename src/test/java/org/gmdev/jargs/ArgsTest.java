@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.gmdev.jargs.ArgsException.ErrorCode.INVALID_INTEGER;
-import static org.gmdev.jargs.ArgsException.ErrorCode.UNEXPECTED_ARGUMENT;
+import static org.gmdev.jargs.ArgsException.ErrorCode.*;
 
 class ArgsTest {
 
@@ -32,12 +31,11 @@ class ArgsTest {
 
         // Then
         assertThat(underTest.cardinality()).isEqualTo(0);
-        assertThat(underTest.isValid()).isTrue();
         assertThat(underTest.usage()).isBlank();
     }
 
     @Test
-    void itShouldThrowIfNoSchemaAndOneArgument() {
+    void itShouldThrowIfNoSchemaAndOneArgumentId() {
         // Given
         String schema = "";
         String[] args = {"-x"};
@@ -53,7 +51,7 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldThrowIfNoSchemaAndMultipleArguments() {
+    void itShouldThrowIfNoSchemaAndMultipleArgumentsId() {
         // Given
         String schema = "";
         String[] args = {"-x", "-y"};
@@ -69,30 +67,13 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldThrowIfSchemaElementIsNotALetter() {
+    void itShouldThrowIfSchemaArgumentIdIsNotALetter() {
         // Given
-        String schema = "1";
-        String[] args = {"-1"};
-
-        // When
-        // Then
-        assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
-                .hasMessageContaining(
-                        String.format("Bad character: %s in Args format: %s", "1", schema));
-    }
-
-    @Test
-    void itShouldThrowIfArgumentIdDoesNotMatchSchemaElement() {
-        // Given
-        String schema = "l";
-        String[] args = {"-x"};
+        String schema = "*";
+        String[] args = new String[0];
 
         ArgsException e = new ArgsException(
-                ArgsException.ErrorCode.UNEXPECTED_ARGUMENT,
-                'x',
-                null
-        );
+                ArgsException.ErrorCode.INVALID_ARGUMENT_NAME, '*', null);
 
         // When
         // Then
@@ -102,12 +83,29 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldThrowIfStringElementIsMissing() {
+    void itShouldThrowIfSchemaFormatIsInvalid() {
         // Given
-        String schema = "n*";
-        String[] args = {"-n"};
+        String schema = "f-";
+        String[] args = new String[0];
 
-        ArgsException e = new ArgsException(ArgsException.ErrorCode.MISSING_STRING);
+        ArgsException e = new ArgsException(
+                ArgsException.ErrorCode.INVALID_FORMAT, 'f', "-");
+
+        // When
+        // Then
+        assertThatThrownBy(() -> new Args(schema, args))
+                .isInstanceOf(ArgsException.class)
+                .isEqualToComparingFieldByField(e);
+    }
+
+    @Test
+    void itShouldThrowIfArgumentIdNotMatchingSchemaArgumentId() {
+        // Given
+        String schema = "l";
+        String[] args = {"-x"};
+
+        ArgsException e = new ArgsException(
+                ArgsException.ErrorCode.UNEXPECTED_ARGUMENT, 'x', null);
 
         // When
         // Then
@@ -127,7 +125,22 @@ class ArgsTest {
 
         // Then
         assertThat(underTest.getBoolean('l')).isTrue();
-        assertThat(underTest.isValid()).isTrue();
+        assertThat(underTest.cardinality()).isEqualTo(1);
+    }
+
+    @Test
+    void itShouldThrowIfStringArgumentValueIsMissing() {
+        // Given
+        String schema = "n*";
+        String[] args = {"-n"};
+
+        ArgsException e = new ArgsException(MISSING_STRING, 'n', null);
+
+        // When
+        // Then
+        assertThatThrownBy(() -> new Args(schema, args))
+                .isInstanceOf(ArgsException.class)
+                .isEqualToComparingFieldByField(e);
     }
 
     @Test
@@ -142,16 +155,32 @@ class ArgsTest {
 
         // Then
         assertThat(underTest.getString('n')).isEqualTo(name);
-        assertThat(underTest.isValid()).isTrue();
+        assertThat(underTest.cardinality()).isEqualTo(1);
+        assertThat(underTest.has('n')).isTrue();
     }
 
     @Test
     void itShouldIThrowIfIntegerIsNotANumber() {
         // Given
         String schema = "n#";
-        String[] args = {"-n", "a"};
+        String[] args = {"-n", "six"};
 
-        ArgsException e = new ArgsException(INVALID_INTEGER, "a");
+        ArgsException e = new ArgsException(INVALID_INTEGER, 'n', "six");
+
+        // When
+        // Then
+        assertThatThrownBy(() -> new Args(schema, args))
+                .isInstanceOf(ArgsException.class)
+                .isEqualToComparingFieldByField(e);
+    }
+
+    @Test
+    void itShouldIThrowIfIntegerIsMissing() {
+        // Given
+        String schema = "n#";
+        String[] args = {"-n"};
+
+        ArgsException e = new ArgsException(MISSING_INTEGER, 'n', null);
 
         // When
         // Then
@@ -173,13 +202,14 @@ class ArgsTest {
 
         // Then
         assertThat(underTest.getInt('n')).isEqualTo(expectedNumber);
-        assertThat(underTest.isValid()).isTrue();
+        assertThat(underTest.cardinality()).isEqualTo(1);
+        assertThat(underTest.has('n')).isTrue();
     }
 
     @Test
     void itShouldReturnTheCorrectArgumentsNumber() throws ArgsException {
         // Given
-        String schema = "f*,s*";
+        String schema = "f*, s*";
         String[] args = {"-f", "first", "-s", "second"};
 
         // When
@@ -189,20 +219,6 @@ class ArgsTest {
         assertThat(underTest.cardinality()).isEqualTo(2);
         assertThat(underTest.usage()).contains(schema);
         assertThat(underTest.has('f')).isTrue();
-    }
-
-    @Test
-    void itShouldThrowWhenCallErrorMessageWithNoErrors() throws Exception {
-        String schema = "";
-        String[] args = {};
-
-        // When
-        underTest = new Args(schema, args);
-
-        // Then
-        assertThatThrownBy(() -> underTest.errorMessage())
-                .isInstanceOf(Exception.class)
-                .hasMessageContaining("TILT: Should not get here");
     }
 
 }

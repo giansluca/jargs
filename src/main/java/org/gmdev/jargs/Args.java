@@ -1,25 +1,22 @@
 package org.gmdev.jargs;
 
 import org.gmdev.jargs.marshalers.ArgumentMarshaler;
+import org.gmdev.jargs.marshalers.BooleanArgumentMarshaler;
+import org.gmdev.jargs.marshalers.IntegerArgumentMarshaler;
+import org.gmdev.jargs.marshalers.StringArgumentMarshaler;
 
 import java.util.*;
 
-import static org.gmdev.jargs.ArgsException.ErrorCode.INVALID_INTEGER;
-import static org.gmdev.jargs.ArgsException.ErrorCode.MISSING_INTEGER;
+import static org.gmdev.jargs.ArgsException.ErrorCode.INVALID_ARGUMENT_NAME;
+import static org.gmdev.jargs.ArgsException.ErrorCode.INVALID_FORMAT;
 
 public class Args {
 
     private final String schema;
-    private boolean valid = true;
-    private final Set<Character> unexpectedArguments = new TreeSet<>();
     private final Set<Character> argsFound = new HashSet<>();
     private final Map<Character, ArgumentMarshaler> marshalers = new HashMap<>();
     private final List<String> argsList;
     private Iterator<String> currentArgument;
-
-    private char errorArgumentId = '\0';
-    private String errorParameter = "TILT!";
-    private ArgsException.ErrorCode errorCode = ArgsException.ErrorCode.OK;
 
     public Args(String schema, String[] args) throws ArgsException {
         this.schema = schema;
@@ -47,20 +44,18 @@ public class Args {
         validateSchemaElement(elementId);
 
         if (isBooleanSchemaElement(elementTail))
-            marshalers.put(elementId, new BooleanArgumentMarshaler_2());
+            marshalers.put(elementId, new BooleanArgumentMarshaler());
         else if (isStringSchemaElement(elementTail))
-            marshalers.put(elementId, new StringArgumentMarshaler_2());
+            marshalers.put(elementId, new StringArgumentMarshaler());
         else if (isIntegerSchemaElement(elementTail))
-            marshalers.put(elementId, new IntegerArgumentMarshaler_2());
+            marshalers.put(elementId, new IntegerArgumentMarshaler());
         else
-            throw new ArgsException(
-                    String.format("Argument %c has invalid format %s", elementId, elementTail));
+            throw new ArgsException(INVALID_FORMAT, elementId, elementTail);
     }
 
     private void validateSchemaElement(char elementId) throws ArgsException {
         if (!Character.isLetter(elementId))
-            throw new ArgsException(
-                    String.format("Bad character: %s in Args format: %s", elementId, schema));
+            throw new ArgsException(INVALID_ARGUMENT_NAME, elementId, null);
     }
 
     private boolean isBooleanSchemaElement(String elementTail) {
@@ -94,7 +89,6 @@ public class Args {
         if (setArgument(argChar)) {
             argsFound.add(argChar);
         } else {
-            valid = false;
             throw new ArgsException(
                     ArgsException.ErrorCode.UNEXPECTED_ARGUMENT,
                     argChar, null);
@@ -110,48 +104,9 @@ public class Args {
             m.set(currentArgument);
             return true;
         } catch (ArgsException e) {
-            valid = false;
-            errorArgumentId = argChar;
+            e.setErrorArgumentId(argChar);
             throw e;
         }
-    }
-
-    public int cardinality() {
-        return argsFound.size();
-    }
-
-    public String usage() {
-        if (schema.length() > 0)
-            return "-[" + schema + "]";
-        else
-            return "";
-    }
-
-    public String errorMessage() throws Exception {
-        switch (errorCode) {
-            case MISSING_STRING:
-                return String.format("Could not find string parameter for -%c", errorArgumentId);
-            case MISSING_INTEGER:
-                return String.format("Could not find integer parameter for -%c", errorArgumentId);
-            case INVALID_INTEGER:
-                return String.format("Invalid integer parameter for -%c", errorArgumentId);
-            case UNEXPECTED_ARGUMENT:
-                return unexpectedArgumentMessage();
-            case OK:
-                throw new Exception("TILT: Should not get here");
-        }
-
-        return "";
-    }
-
-    private String unexpectedArgumentMessage() {
-        StringBuilder message = new StringBuilder("Argument(s) -");
-        for (char c : unexpectedArguments)
-            message.append(c);
-
-        message.append(" unexpected.");
-
-        return message.toString();
     }
 
     public boolean getBoolean(char arg) {
@@ -176,72 +131,24 @@ public class Args {
         ArgumentMarshaler am = marshalers.get(arg);
         try {
             return am == null ? 0 : (Integer) am.get();
-        } catch (Exception e) {
+        } catch (ClassCastException e) {
             return 0;
         }
+    }
+
+    public int cardinality() {
+        return argsFound.size();
     }
 
     public boolean has(char arg) {
         return argsFound.contains(arg);
     }
 
-    public boolean isValid() {
-        return valid;
+    public String usage() {
+        if (schema.length() > 0)
+            return "-[" + schema + "]";
+        else
+            return "";
     }
 
-    public class BooleanArgumentMarshaler_2 implements ArgumentMarshaler {
-        private boolean booleanValue = false;
-
-        @Override
-        public void set(Iterator<String> currentArgument) throws ArgsException {
-            booleanValue = true;
-        }
-
-        @Override
-        public Object get() {
-            return booleanValue;
-        }
-    }
-
-    public class IntegerArgumentMarshaler_2 implements ArgumentMarshaler {
-        private int intValue = 0;
-
-        @Override
-        public void set(Iterator<String> currentArgument) throws ArgsException {
-            String parameter = null;
-            try {
-                parameter = currentArgument.next();
-                intValue = Integer.parseInt(parameter);
-            } catch (NoSuchElementException e) {
-                throw new ArgsException(MISSING_INTEGER);
-            } catch (NumberFormatException e) {
-                throw new ArgsException(INVALID_INTEGER, parameter);
-            }
-        }
-
-        @Override
-        public Object get() {
-            return intValue;
-        }
-    }
-
-    public class StringArgumentMarshaler_2 implements ArgumentMarshaler {
-        private String stringValue = "";
-
-        @Override
-        public void set(Iterator<String> currentArgument) throws ArgsException {
-            try {
-                stringValue = currentArgument.next();
-            } catch (NoSuchElementException e) {
-                throw new ArgsException(
-                        ArgsException.ErrorCode.MISSING_STRING);
-            }
-        }
-
-        @Override
-        public Object get() {
-            return stringValue;
-        }
-
-    }
 }

@@ -5,6 +5,8 @@ import org.gmdev.jargs.ArgsException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import static org.gmdev.jargs.ArgsException.ErrorCode.MISSING_STRING;
+
 public class StringArgumentMarshaler implements ArgumentMarshaler {
 
     private String stringValue = "";
@@ -14,8 +16,7 @@ public class StringArgumentMarshaler implements ArgumentMarshaler {
         try {
             stringValue = currentArgument.next();
         } catch (NoSuchElementException e) {
-            //errorCode = ArgsException.ErrorCode.MISSING_STRING;
-            throw new ArgsException();
+            throw new ArgsException(MISSING_STRING);
         }
     }
 

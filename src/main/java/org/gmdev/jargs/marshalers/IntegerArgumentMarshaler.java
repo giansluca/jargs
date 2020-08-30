@@ -5,23 +5,23 @@ import org.gmdev.jargs.ArgsException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import static org.gmdev.jargs.ArgsException.ErrorCode.INVALID_INTEGER;
+import static org.gmdev.jargs.ArgsException.ErrorCode.MISSING_INTEGER;
+
 public class IntegerArgumentMarshaler implements ArgumentMarshaler {
 
     private int intValue = 0;
 
     @Override
     public void set(Iterator<String> currentArgument) throws ArgsException {
-        String parameter;
+        String parameter = null;
         try {
             parameter = currentArgument.next();
             intValue = Integer.parseInt(parameter);
         } catch (NoSuchElementException e) {
-            //errorCode = ArgsException.ErrorCode.MISSING_INTEGER;
-            throw new ArgsException();
+            throw new ArgsException(MISSING_INTEGER);
         } catch (NumberFormatException e) {
-            //errorParameter = parameter;
-            //errorCode = ArgsException.ErrorCode.INVALID_INTEGER;
-            throw new ArgsException();
+            throw new ArgsException(INVALID_INTEGER, parameter);
         }
     }
 
