@@ -1,9 +1,6 @@
 package org.gmdev.jargs;
 
-import org.gmdev.jargs.marshalers.ArgumentMarshaler;
-import org.gmdev.jargs.marshalers.BooleanArgumentMarshaler;
-import org.gmdev.jargs.marshalers.IntegerArgumentMarshaler;
-import org.gmdev.jargs.marshalers.StringArgumentMarshaler;
+import org.gmdev.jargs.marshalers.*;
 
 import java.util.*;
 
@@ -43,12 +40,14 @@ public class Args {
         String elementTail = element.substring(1);
         validateSchemaElement(elementId);
 
-        if (isBooleanSchemaElement(elementTail))
+        if (elementTail.length() == 0)
             marshalers.put(elementId, new BooleanArgumentMarshaler());
-        else if (isStringSchemaElement(elementTail))
+        else if (elementTail.equals("*"))
             marshalers.put(elementId, new StringArgumentMarshaler());
-        else if (isIntegerSchemaElement(elementTail))
+        else if (elementTail.equals("#"))
             marshalers.put(elementId, new IntegerArgumentMarshaler());
+        else if (elementTail.equals("##"))
+            marshalers.put(elementId, new DoubleArgumentMarshaler());
         else
             throw new ArgsException(INVALID_FORMAT, elementId, elementTail);
     }
@@ -56,18 +55,6 @@ public class Args {
     private void validateSchemaElement(char elementId) throws ArgsException {
         if (!Character.isLetter(elementId))
             throw new ArgsException(INVALID_ARGUMENT_NAME, elementId, null);
-    }
-
-    private boolean isBooleanSchemaElement(String elementTail) {
-        return elementTail.length() == 0;
-    }
-
-    private boolean isStringSchemaElement(String elementTail) {
-        return elementTail.equals("*");
-    }
-
-    private boolean isIntegerSchemaElement(String elementTail) {
-        return elementTail.equals("#");
     }
 
     private void parseArguments() throws ArgsException {
@@ -131,7 +118,16 @@ public class Args {
         ArgumentMarshaler am = marshalers.get(arg);
         try {
             return am == null ? 0 : (Integer) am.get();
-        } catch (ClassCastException e) {
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public double getDouble(char arg) {
+        ArgumentMarshaler am = marshalers.get(arg);
+        try {
+            return am == null ? 0 : (Double) am.get();
+        } catch (Exception e) {
             return 0;
         }
     }

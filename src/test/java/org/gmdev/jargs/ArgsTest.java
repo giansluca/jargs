@@ -207,6 +207,53 @@ class ArgsTest {
     }
 
     @Test
+    void itShouldThrowIfDoubleIsNotANumber() {
+        // Given
+        String schema = "n##";
+        String[] args = {"-n", "six"};
+
+        ArgsException e = new ArgsException(INVALID_DOUBLE, 'n', "six");
+
+        // When
+        // Then
+        assertThatThrownBy(() -> new Args(schema, args))
+                .isInstanceOf(ArgsException.class)
+                .isEqualToComparingFieldByField(e);
+    }
+
+    @Test
+    void itShouldIThrowIfDoubleIsMissing() {
+        // Given
+        String schema = "n##";
+        String[] args = {"-n"};
+
+        ArgsException e = new ArgsException(MISSING_DOUBLE, 'n', null);
+
+        // When
+        // Then
+        assertThatThrownBy(() -> new Args(schema, args))
+                .isInstanceOf(ArgsException.class)
+                .isEqualToComparingFieldByField(e);
+    }
+
+    @Test
+    void itShouldSetDoubleValue() throws ArgsException {
+        // Given
+        String giveNumber = "99.05";
+        double expectedNumber = 99.05;
+        String schema = "n##";
+        String[] args = {"-n", giveNumber};
+
+        // When
+        underTest = new Args(schema, args);
+
+        // Then
+        assertThat(underTest.getDouble('n')).isEqualTo(expectedNumber);
+        assertThat(underTest.cardinality()).isEqualTo(1);
+        assertThat(underTest.has('n')).isTrue();
+    }
+
+    @Test
     void itShouldReturnTheCorrectArgumentsNumber() throws ArgsException {
         // Given
         String schema = "f*, s*";
