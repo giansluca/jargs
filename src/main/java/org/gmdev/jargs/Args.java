@@ -12,18 +12,12 @@ public class Args {
     private final String schema;
     private final Set<Character> argsFound = new HashSet<>();
     private final Map<Character, ArgumentMarshaler> marshalers = new HashMap<>();
-    private final List<String> argsList;
     private Iterator<String> currentArgument;
+    private final List<String> argsList;
 
     public Args(String schema, String[] args) throws ArgsException {
         this.schema = schema;
         argsList = Arrays.asList(args);
-        parse();
-    }
-
-    private void parse() throws ArgsException {
-        if (schema.length() == 0 && argsList.size() == 0)
-            return;
 
         parseSchema();
         parseArguments();

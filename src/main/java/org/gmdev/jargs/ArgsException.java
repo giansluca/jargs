@@ -31,20 +31,20 @@ public class ArgsException extends Exception {
         return errorArgumentId;
     }
 
-    public String getErrorParameter() {
-        return errorParameter;
-    }
-
-    public ErrorCode getErrorCode() {
-        return errorCode;
-    }
-
     public void setErrorArgumentId(char errorArgumentId) {
         this.errorArgumentId = errorArgumentId;
     }
 
+    public String getErrorParameter() {
+        return errorParameter;
+    }
+
     public void setErrorParameter(String errorParameter) {
         this.errorParameter = errorParameter;
+    }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
     }
 
     public void setErrorCode(ErrorCode errorCode) {
@@ -53,16 +53,22 @@ public class ArgsException extends Exception {
 
     public String errorMessage() throws Exception {
         switch (errorCode) {
+            case OK:
+                throw new Exception("TILT: Should not get here");
+            case UNEXPECTED_ARGUMENT:
+                return String.format("Argument -%c unexpected", errorArgumentId);
             case MISSING_STRING:
                 return String.format("Could not find string parameter for -%c", errorArgumentId);
             case MISSING_INTEGER:
                 return String.format("Could not find integer parameter for -%c", errorArgumentId);
             case INVALID_INTEGER:
-                return String.format("Invalid integer parameter for -%c", errorArgumentId);
-            case UNEXPECTED_ARGUMENT:
-                return String.format("Argument -%c unexpected", errorArgumentId);
-            case OK:
-                throw new Exception("TILT: Should not get here");
+                return String.format(
+                        "Argument -%c expects an integer but was '%s'", errorArgumentId, errorParameter);
+            case MISSING_DOUBLE:
+                return String.format("Could not find double parameter for -%c", errorArgumentId);
+            case INVALID_DOUBLE:
+                return String.format(
+                        "Argument -%c expects a double but was '%s'", errorArgumentId, errorParameter);
         }
 
         return "";
@@ -70,12 +76,12 @@ public class ArgsException extends Exception {
 
     public enum ErrorCode {
         OK("ok"),
+        INVALID_FORMAT("Invalid format"),
+        UNEXPECTED_ARGUMENT("Unexpected argument"),
         INVALID_ARGUMENT_NAME("Invalid argument name"),
-        INVALID_FORMAT("Invlid format"),
         MISSING_STRING("Missing string"),
         MISSING_INTEGER("Missing integer"),
         INVALID_INTEGER("Invalid integer"),
-        UNEXPECTED_ARGUMENT("Unexpected argument"),
         MISSING_DOUBLE("Missing double"),
         INVALID_DOUBLE("Invalid double");
 

@@ -21,7 +21,7 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldBeValidIfNoSchemaAndNoArguments() throws ArgsException {
+    void itShouldDoNothingIfNoSchemaAndNoArguments() throws ArgsException {
         // Given
         String schema = "";
         String[] args = new String[0];
