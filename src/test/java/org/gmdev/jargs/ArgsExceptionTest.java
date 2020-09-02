@@ -33,6 +33,16 @@ class ArgsExceptionTest {
     }
 
     @Test
+    void isShouldReturnEmptyMessage() throws Exception {
+        // Given
+        underTest = new ArgsException(NO_CODE);
+
+        // When
+        // Then
+        assertThat(underTest.errorMessage()).isBlank();
+    }
+
+    @Test
     void itShouldGetUnexpectedMessage() throws Exception {
         // Given
         underTest = new ArgsException(UNEXPECTED_ARGUMENT, 'x', null);

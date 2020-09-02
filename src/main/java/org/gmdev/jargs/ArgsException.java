@@ -76,6 +76,7 @@ public class ArgsException extends Exception {
 
     public enum ErrorCode {
         OK("ok"),
+        NO_CODE("No code"),
         INVALID_FORMAT("Invalid format"),
         UNEXPECTED_ARGUMENT("Unexpected argument"),
         INVALID_ARGUMENT_NAME("Invalid argument name"),
