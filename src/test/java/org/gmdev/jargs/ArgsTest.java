@@ -144,19 +144,22 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldSetStringValue() throws ArgsException {
+    void itShouldSetStringValues() throws ArgsException {
         // Given
         String name = "gians";
-        String schema = "n*";
-        String[] args = {"-n", name};
+        String test = "test";
+        String schema = "n*, t*";
+        String[] args = {"-nt", name, test};
 
         // When
         underTest = new Args(schema, args);
 
         // Then
         assertThat(underTest.getString('n')).isEqualTo(name);
-        assertThat(underTest.cardinality()).isEqualTo(1);
+        assertThat(underTest.getString('t')).isEqualTo(test);
+        assertThat(underTest.cardinality()).isEqualTo(2);
         assertThat(underTest.has('n')).isTrue();
+        assertThat(underTest.has('t')).isTrue();
     }
 
     @Test

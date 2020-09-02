@@ -69,9 +69,9 @@ public class ArgsException extends Exception {
             case INVALID_DOUBLE:
                 return String.format(
                         "Argument -%c expects a double but was '%s'", errorArgumentId, errorParameter);
+            default:
+                return "";
         }
-
-        return "";
     }
 
     public enum ErrorCode {

@@ -92,38 +92,22 @@ public class Args {
 
     public boolean getBoolean(char arg) {
         ArgumentMarshaler m = marshalers.get(arg);
-        try {
-            return m != null && (Boolean) m.get();
-        } catch (ClassCastException e) {
-             return false;
-        }
+        return m != null && (Boolean) m.get();
     }
 
     public String getString(char arg) {
         ArgumentMarshaler am = marshalers.get(arg);
-        try {
-            return am == null ? "" : (String) am.get();
-        } catch (ClassCastException e) {
-            return "";
-        }
+        return am == null ? "" : (String) am.get();
     }
 
     public int getInt(char arg) {
         ArgumentMarshaler am = marshalers.get(arg);
-        try {
-            return am == null ? 0 : (Integer) am.get();
-        } catch (Exception e) {
-            return 0;
-        }
+        return am == null ? 0 : (Integer) am.get();
     }
 
     public double getDouble(char arg) {
         ArgumentMarshaler am = marshalers.get(arg);
-        try {
-            return am == null ? 0 : (Double) am.get();
-        } catch (Exception e) {
-            return 0;
-        }
+        return am == null ? 0 : (Double) am.get();
     }
 
     public int cardinality() {
