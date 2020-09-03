@@ -6,8 +6,7 @@ import java.util.Iterator;
 
 public interface ArgumentMarshaler {
 
-    public abstract void set(Iterator<String> currentArgument) throws ArgsException;
+    void set(Iterator<String> currentArgument) throws ArgsException;
 
-    public abstract Object get();
-
+    Object get();
 }

@@ -25,5 +25,8 @@ public class StringArgumentMarshaler implements ArgumentMarshaler {
         return stringValue;
     }
 
+    public static String get(ArgumentMarshaler am) {
+        return am.get() == null ? "" : (String) am.get();
+    }
 
 }

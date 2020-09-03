@@ -91,23 +91,19 @@ public class Args {
     }
 
     public boolean getBoolean(char arg) {
-        ArgumentMarshaler m = marshalers.get(arg);
-        return m != null && (Boolean) m.get();
+        return BooleanArgumentMarshaler.get(marshalers.get(arg));
     }
 
     public String getString(char arg) {
-        ArgumentMarshaler am = marshalers.get(arg);
-        return am == null ? "" : (String) am.get();
+        return StringArgumentMarshaler.get(marshalers.get(arg));
     }
 
     public int getInt(char arg) {
-        ArgumentMarshaler am = marshalers.get(arg);
-        return am == null ? 0 : (Integer) am.get();
+        return IntegerArgumentMarshaler.get(marshalers.get(arg));
     }
 
     public double getDouble(char arg) {
-        ArgumentMarshaler am = marshalers.get(arg);
-        return am == null ? 0 : (Double) am.get();
+        return DoubleArgumentMarshaler.get(marshalers.get(arg));
     }
 
     public int cardinality() {

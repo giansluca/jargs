@@ -30,5 +30,9 @@ public class IntegerArgumentMarshaler implements ArgumentMarshaler {
         return intValue;
     }
 
+    public static int get(ArgumentMarshaler am) {
+        return am.get() == null ? 0 : (Integer) am.get();
+    }
+
 
 }
