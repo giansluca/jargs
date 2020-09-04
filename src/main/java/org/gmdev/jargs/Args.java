@@ -9,21 +9,19 @@ import static org.gmdev.jargs.ArgsException.ErrorCode.INVALID_FORMAT;
 
 public class Args {
 
-    private final String schema;
-    private final Set<Character> argsFound = new HashSet<>();
-    private final Map<Character, ArgumentMarshaler> marshalers = new HashMap<>();
-    private Iterator<String> currentArgument;
-    private final List<String> argsList;
+    private final Set<Character> argsFound;
+    private final Map<Character, ArgumentMarshaler> marshalers;
+    private ListIterator<String> currentArgument;
 
     public Args(String schema, String[] args) throws ArgsException {
-        this.schema = schema;
-        argsList = Arrays.asList(args);
+        argsFound = new HashSet<>();
+        marshalers = new HashMap<>();
 
-        parseSchema();
-        parseArguments();
+        parseSchema(schema);
+        parseArgumentStrings(Arrays.asList(args));
     }
 
-    private void parseSchema() throws ArgsException {
+    private void parseSchema(String schema) throws ArgsException {
         for (String element : schema.split(","))
             if (element.length() > 0)
                 parseSchemaElement(element.trim());
@@ -51,18 +49,20 @@ public class Args {
             throw new ArgsException(INVALID_ARGUMENT_NAME, elementId, null);
     }
 
-    private void parseArguments() throws ArgsException {
-        for (currentArgument = argsList.iterator(); currentArgument.hasNext(); )
-            parseArgument(currentArgument.next());
+    private void parseArgumentStrings(List<String> argsList) throws ArgsException {
+        for (currentArgument = argsList.listIterator(); currentArgument.hasNext(); ) {
+            String argString = currentArgument.next();
+            if(argString.startsWith("-"))
+                parseArgumentCharacters(argString.substring(1));
+            else {
+                currentArgument.previous();
+                break;
+            }
+        }
     }
 
-    private void parseArgument(String arg) throws ArgsException {
-        if (arg.startsWith("-"))
-            parseElements(arg);
-    }
-
-    private void parseElements(String arg) throws ArgsException {
-        for (int i = 1; i < arg.length(); i++)
+    private void parseArgumentCharacters(String arg) throws ArgsException {
+        for (int i = 0; i < arg.length(); i++)
             parseElement(arg.charAt(i));
     }
 
@@ -91,19 +91,19 @@ public class Args {
     }
 
     public boolean getBoolean(char arg) {
-        return BooleanArgumentMarshaler.get(marshalers.get(arg));
+        return BooleanArgumentMarshaler.getValue(marshalers.get(arg));
     }
 
     public String getString(char arg) {
-        return StringArgumentMarshaler.get(marshalers.get(arg));
+        return StringArgumentMarshaler.getValue(marshalers.get(arg));
     }
 
     public int getInt(char arg) {
-        return IntegerArgumentMarshaler.get(marshalers.get(arg));
+        return IntegerArgumentMarshaler.getValue(marshalers.get(arg));
     }
 
     public double getDouble(char arg) {
-        return DoubleArgumentMarshaler.get(marshalers.get(arg));
+        return DoubleArgumentMarshaler.getValue(marshalers.get(arg));
     }
 
     public int cardinality() {
@@ -112,13 +112,6 @@ public class Args {
 
     public boolean has(char arg) {
         return argsFound.contains(arg);
-    }
-
-    public String usage() {
-        if (schema.length() > 0)
-            return "-[" + schema + "]";
-        else
-            return "";
     }
 
 }

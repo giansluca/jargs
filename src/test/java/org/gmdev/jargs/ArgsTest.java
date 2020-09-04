@@ -31,7 +31,6 @@ class ArgsTest {
 
         // Then
         assertThat(underTest.cardinality()).isEqualTo(0);
-        assertThat(underTest.usage()).isBlank();
     }
 
     @Test
@@ -267,7 +266,6 @@ class ArgsTest {
 
         // Then
         assertThat(underTest.cardinality()).isEqualTo(2);
-        assertThat(underTest.usage()).contains(schema);
         assertThat(underTest.has('f')).isTrue();
     }
 

@@ -20,13 +20,10 @@ public class StringArgumentMarshaler implements ArgumentMarshaler {
         }
     }
 
-    @Override
-    public Object get() {
-        return stringValue;
-    }
-
-    public static String get(ArgumentMarshaler am) {
-        return am.get() == null ? "" : (String) am.get();
+    public static String getValue(ArgumentMarshaler am) {
+        if (am instanceof StringArgumentMarshaler)
+            return ((StringArgumentMarshaler) am).stringValue;
+        return "";
     }
 
 }

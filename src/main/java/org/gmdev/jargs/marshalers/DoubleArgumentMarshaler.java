@@ -23,12 +23,9 @@ public class DoubleArgumentMarshaler implements ArgumentMarshaler {
         }
     }
 
-    @Override
-    public Object get() {
-        return doubleValue;
-    }
-
-    public static double get(ArgumentMarshaler am) {
-        return am.get() == null ? 0 : (Double) am.get();
+    public static double getValue(ArgumentMarshaler am) {
+        if (am instanceof DoubleArgumentMarshaler)
+            return ((DoubleArgumentMarshaler) am).doubleValue;
+        return 0;
     }
 }

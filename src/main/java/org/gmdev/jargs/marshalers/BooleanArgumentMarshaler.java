@@ -13,13 +13,11 @@ public class BooleanArgumentMarshaler implements ArgumentMarshaler {
         booleanValue = true;
     }
 
-    @Override
-    public Object get() {
-        return booleanValue;
-    }
+    public static boolean getValue(ArgumentMarshaler am) {
+        if (am != null && am instanceof BooleanArgumentMarshaler)
+             return ((BooleanArgumentMarshaler) am).booleanValue;
 
-    public static boolean get(ArgumentMarshaler am) {
-        return am.get() != null && (Boolean) am.get();
+        return false;
     }
 
 }
