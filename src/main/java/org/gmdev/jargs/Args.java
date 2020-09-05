@@ -4,8 +4,7 @@ import org.gmdev.jargs.marshalers.*;
 
 import java.util.*;
 
-import static org.gmdev.jargs.ArgsException.ErrorCode.INVALID_ARGUMENT_NAME;
-import static org.gmdev.jargs.ArgsException.ErrorCode.INVALID_FORMAT;
+import static org.gmdev.jargs.ArgsException.ErrorCode.*;
 
 public class Args {
 
@@ -63,27 +62,17 @@ public class Args {
 
     private void parseArgumentCharacters(String arg) throws ArgsException {
         for (int i = 0; i < arg.length(); i++)
-            parseElement(arg.charAt(i));
+            parseArgumentCharacter(arg.charAt(i));
     }
 
-    private void parseElement(char argChar) throws ArgsException {
-        if (setArgument(argChar)) {
-            argsFound.add(argChar);
-        } else {
-            throw new ArgsException(
-                    ArgsException.ErrorCode.UNEXPECTED_ARGUMENT,
-                    argChar, null);
-        }
-    }
+    private void parseArgumentCharacter(char argChar) throws ArgsException {
+        ArgumentMarshaler am = marshalers.get(argChar);
+        if (am == null)
+            throw new ArgsException(UNEXPECTED_ARGUMENT, argChar, null);
 
-    private boolean setArgument(char argChar) throws ArgsException {
-        ArgumentMarshaler m = marshalers.get(argChar);
-        if (m == null)
-            return false;
-
+        argsFound.add(argChar);
         try {
-            m.set(currentArgument);
-            return true;
+            am.set(currentArgument);
         } catch (ArgsException e) {
             e.setErrorArgumentId(argChar);
             throw e;

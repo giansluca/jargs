@@ -1,10 +1,12 @@
 package org.gmdev.jargs;
 
+import static org.gmdev.jargs.ArgsException.ErrorCode.OK;
+
 public class ArgsException extends Exception {
 
     private char errorArgumentId = '\0';
     private String errorParameter;
-    private ErrorCode errorCode = ErrorCode.OK;
+    private ErrorCode errorCode = OK;
 
     public ArgsException() {}
 
@@ -57,6 +59,10 @@ public class ArgsException extends Exception {
                 throw new Exception("TILT: Should not get here");
             case UNEXPECTED_ARGUMENT:
                 return String.format("Argument -%c unexpected", errorArgumentId);
+            case INVALID_ARGUMENT_NAME:
+                return String.format("'%c' is not a valid argument name", errorArgumentId);
+            case INVALID_FORMAT:
+                return String.format("'%s' is not a valid argument parameter", errorParameter);
             case MISSING_STRING:
                 return String.format("Could not find string parameter for -%c", errorArgumentId);
             case MISSING_INTEGER:
