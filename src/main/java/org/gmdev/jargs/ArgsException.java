@@ -4,11 +4,9 @@ import static org.gmdev.jargs.ArgsException.ErrorCode.OK;
 
 public class ArgsException extends Exception {
 
-    private char errorArgumentId = '\0';
+    private String errorArgumentId = "";
     private String errorParameter;
     private ErrorCode errorCode = OK;
-
-    public ArgsException() {}
 
     public ArgsException(String message) {
         super(message);
@@ -23,17 +21,17 @@ public class ArgsException extends Exception {
         this.errorParameter = errorParameter;
     }
 
-    public ArgsException(ErrorCode errorCode, char errorArgumentId, String errorParameter) {
+    public ArgsException(ErrorCode errorCode, String errorArgumentId, String errorParameter) {
         this.errorCode = errorCode;
         this.errorArgumentId = errorArgumentId;
         this.errorParameter = errorParameter;
     }
 
-    public char getErrorArgumentId() {
+    public String getErrorArgumentId() {
         return errorArgumentId;
     }
 
-    public void setErrorArgumentId(char errorArgumentId) {
+    public void setErrorArgumentId(String errorArgumentId) {
         this.errorArgumentId = errorArgumentId;
     }
 
@@ -58,23 +56,23 @@ public class ArgsException extends Exception {
             case OK:
                 throw new Exception("TILT: Should not get here");
             case UNEXPECTED_ARGUMENT:
-                return String.format("Argument -%c unexpected", errorArgumentId);
+                return String.format("Argument -%s unexpected", errorArgumentId);
             case INVALID_ARGUMENT_NAME:
-                return String.format("'%c' is not a valid argument name", errorArgumentId);
+                return String.format("'%s' is not a valid argument name", errorArgumentId);
             case INVALID_FORMAT:
                 return String.format("'%s' is not a valid argument parameter", errorParameter);
             case MISSING_STRING:
-                return String.format("Could not find string parameter for -%c", errorArgumentId);
+                return String.format("Could not find string parameter for -%s", errorArgumentId);
             case MISSING_INTEGER:
-                return String.format("Could not find integer parameter for -%c", errorArgumentId);
+                return String.format("Could not find integer parameter for -%s", errorArgumentId);
             case INVALID_INTEGER:
                 return String.format(
-                        "Argument -%c expects an integer but was '%s'", errorArgumentId, errorParameter);
+                        "Argument -%s expects an integer but was '%s'", errorArgumentId, errorParameter);
             case MISSING_DOUBLE:
-                return String.format("Could not find double parameter for -%c", errorArgumentId);
+                return String.format("Could not find double parameter for -%s", errorArgumentId);
             case INVALID_DOUBLE:
                 return String.format(
-                        "Argument -%c expects a double but was '%s'", errorArgumentId, errorParameter);
+                        "Argument -%s expects a double but was '%s'", errorArgumentId, errorParameter);
             default:
                 return "";
         }

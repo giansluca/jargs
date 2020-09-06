@@ -37,7 +37,7 @@ class ArgsTest {
     void itShouldThrowIfNoSchemaAndOneArgumentId() {
         // Given
         String schema = "";
-        String[] args = {"-x"};
+        String[] args = {"-id"};
 
         try {
             // When
@@ -45,7 +45,7 @@ class ArgsTest {
         } catch (ArgsException e) {
             // Then
             assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
-            assertThat(e.getErrorArgumentId()).isEqualTo('x');
+            assertThat(e.getErrorArgumentId()).isEqualTo("id");
         }
     }
 
@@ -53,7 +53,7 @@ class ArgsTest {
     void itShouldThrowIfNoSchemaAndMultipleArgumentsId() {
         // Given
         String schema = "";
-        String[] args = {"-x", "-y"};
+        String[] args = {"-id1", "-id2"};
 
         try {
             // When
@@ -61,18 +61,48 @@ class ArgsTest {
         } catch (ArgsException e) {
             // Then
             assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
-            assertThat(e.getErrorArgumentId()).isEqualTo('x');
+            assertThat(e.getErrorArgumentId()).isEqualTo("id1");
         }
     }
 
     @Test
-    void itShouldThrowIfSchemaArgumentIdIsNotALetter() {
+    void isShouldThrowIfArgumentIdNotStartsWithHyphen() throws ArgsException {
+        // Given
+        String schema = "name*";
+        String[] args = {"name", "gians"};
+
+        ArgsException e = new ArgsException(INVALID_ARGUMENT_NAME, "name", null);
+
+        // When
+        // Then
+        assertThatThrownBy(() -> underTest = new Args(schema, args))
+            .isInstanceOf(ArgsException.class)
+            .isEqualToComparingFieldByField(e);
+    }
+
+    @Test
+    void isShouldThrowIfArgumentSchemaIfContainsOnlySymbol() {
         // Given
         String schema = "*";
         String[] args = new String[0];
 
+        ArgsException e = new ArgsException(INVALID_ARGUMENT_NAME);
+
+        // When
+        // Then
+        assertThatThrownBy(() -> new Args(schema, args))
+                .isInstanceOf(ArgsException.class)
+                .isEqualToComparingFieldByField(e);
+    }
+
+    @Test
+    void itShouldThrowIfSchemaArgumentIdContainsNotALetter() {
+        // Given
+        String schema = "_id*";
+        String[] args = new String[0];
+
         ArgsException e = new ArgsException(
-                ArgsException.ErrorCode.INVALID_ARGUMENT_NAME, '*', null);
+                ArgsException.ErrorCode.INVALID_ARGUMENT_NAME, "_id", null);
 
         // When
         // Then
@@ -84,11 +114,11 @@ class ArgsTest {
     @Test
     void itShouldThrowIfSchemaFormatIsInvalid() {
         // Given
-        String schema = "f-";
+        String schema = "id&";
         String[] args = new String[0];
 
         ArgsException e = new ArgsException(
-                ArgsException.ErrorCode.INVALID_FORMAT, 'f', "-");
+                ArgsException.ErrorCode.INVALID_FORMAT, "id", "&");
 
         // When
         // Then
@@ -100,11 +130,11 @@ class ArgsTest {
     @Test
     void itShouldThrowIfArgumentIdNotMatchingSchemaArgumentId() {
         // Given
-        String schema = "l";
-        String[] args = {"-x"};
+        String schema = "id%";
+        String[] args = {"-idA"};
 
         ArgsException e = new ArgsException(
-                ArgsException.ErrorCode.UNEXPECTED_ARGUMENT, 'x', null);
+                ArgsException.ErrorCode.UNEXPECTED_ARGUMENT, "idA", null);
 
         // When
         // Then
@@ -116,24 +146,25 @@ class ArgsTest {
     @Test
     void itShouldSetBooleanValue() throws ArgsException {
         // Given
-        String schema = "l";
-        String[] args = {"-l"};
+        String schema = "bool%";
+        String[] args = {"-bool"};
 
         // When
         underTest = new Args(schema, args);
 
         // Then
-        assertThat(underTest.getBoolean('l')).isTrue();
+        assertThat(underTest.getBoolean("bool")).isTrue();
         assertThat(underTest.cardinality()).isEqualTo(1);
+        assertThat(underTest.has("bool")).isTrue();
     }
 
     @Test
     void itShouldThrowIfStringArgumentValueIsMissing() {
         // Given
-        String schema = "n*";
-        String[] args = {"-n"};
+        String schema = "string*";
+        String[] args = {"-string"};
 
-        ArgsException e = new ArgsException(MISSING_STRING, 'n', null);
+        ArgsException e = new ArgsException(MISSING_STRING, "string", null);
 
         // When
         // Then
@@ -145,29 +176,27 @@ class ArgsTest {
     @Test
     void itShouldSetStringValues() throws ArgsException {
         // Given
-        String name = "gians";
-        String test = "test";
-        String schema = "n*, t*";
-        String[] args = {"-nt", name, test};
+        String schema = "name*, job*";
+        String[] args = {"-name", "gians", "-job", "developer"};
 
         // When
         underTest = new Args(schema, args);
 
         // Then
-        assertThat(underTest.getString('n')).isEqualTo(name);
-        assertThat(underTest.getString('t')).isEqualTo(test);
+        assertThat(underTest.getString("name")).isEqualTo("gians");
+        assertThat(underTest.has("name")).isTrue();
+        assertThat(underTest.getString("job")).isEqualTo("developer");
+        assertThat(underTest.has("job")).isTrue();
         assertThat(underTest.cardinality()).isEqualTo(2);
-        assertThat(underTest.has('n')).isTrue();
-        assertThat(underTest.has('t')).isTrue();
     }
 
     @Test
-    void itShouldIThrowIfIntegerIsNotANumber() {
+    void itShouldIThrowIfIntegerArgumentValueIsNotANumber() {
         // Given
-        String schema = "n#";
-        String[] args = {"-n", "six"};
+        String schema = "int#";
+        String[] args = {"-int", "six"};
 
-        ArgsException e = new ArgsException(INVALID_INTEGER, 'n', "six");
+        ArgsException e = new ArgsException(INVALID_INTEGER, "int", "six");
 
         // When
         // Then
@@ -177,12 +206,12 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldIThrowIfIntegerIsMissing() {
+    void itShouldIThrowIfIntegerArgumentValueIsMissing() {
         // Given
-        String schema = "n#";
-        String[] args = {"-n"};
+        String schema = "int#";
+        String[] args = {"-int"};
 
-        ArgsException e = new ArgsException(MISSING_INTEGER, 'n', null);
+        ArgsException e = new ArgsException(MISSING_INTEGER, "int", null);
 
         // When
         // Then
@@ -194,27 +223,25 @@ class ArgsTest {
     @Test
     void itShouldSetIntegerValue() throws ArgsException {
         // Given
-        String giveNumber = "99";
-        int expectedNumber = 99;
-        String schema = "n#";
-        String[] args = {"-n", giveNumber};
+        String schema = "int#";
+        String[] args = {"-int", "99"};
 
         // When
         underTest = new Args(schema, args);
 
         // Then
-        assertThat(underTest.getInt('n')).isEqualTo(expectedNumber);
+        assertThat(underTest.getInt("int")).isEqualTo(99);
         assertThat(underTest.cardinality()).isEqualTo(1);
-        assertThat(underTest.has('n')).isTrue();
+        assertThat(underTest.has("int")).isTrue();
     }
 
     @Test
-    void itShouldThrowIfDoubleIsNotANumber() {
+    void itShouldThrowIfDoubleArgumentValueIsNotANumber() {
         // Given
-        String schema = "n##";
-        String[] args = {"-n", "six"};
+        String schema = "double@";
+        String[] args = {"-double", "six"};
 
-        ArgsException e = new ArgsException(INVALID_DOUBLE, 'n', "six");
+        ArgsException e = new ArgsException(INVALID_DOUBLE, "double", "six");
 
         // When
         // Then
@@ -224,12 +251,12 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldIThrowIfDoubleIsMissing() {
+    void itShouldIThrowIfDoubleArgumentValueIsMissing() {
         // Given
-        String schema = "n##";
-        String[] args = {"-n"};
+        String schema = "double@";
+        String[] args = {"-double"};
 
-        ArgsException e = new ArgsException(MISSING_DOUBLE, 'n', null);
+        ArgsException e = new ArgsException(MISSING_DOUBLE, "double", null);
 
         // When
         // Then
@@ -241,32 +268,31 @@ class ArgsTest {
     @Test
     void itShouldSetDoubleValue() throws ArgsException {
         // Given
-        String giveNumber = "99.05";
-        double expectedNumber = 99.05;
-        String schema = "n##";
-        String[] args = {"-n", giveNumber};
+        String schema = "double@";
+        String[] args = {"-double", "99.05"};
 
         // When
         underTest = new Args(schema, args);
 
         // Then
-        assertThat(underTest.getDouble('n')).isEqualTo(expectedNumber);
+        assertThat(underTest.getDouble("double")).isEqualTo(99.05);
         assertThat(underTest.cardinality()).isEqualTo(1);
-        assertThat(underTest.has('n')).isTrue();
+        assertThat(underTest.has("double")).isTrue();
     }
 
     @Test
     void itShouldReturnTheCorrectArgumentsNumber() throws ArgsException {
         // Given
-        String schema = "f*, s*";
-        String[] args = {"-f", "first", "-s", "second"};
+        String schema = "first*, second*";
+        String[] args = {"-first", "first-value", "-second", "second-value"};
 
         // When
         underTest = new Args(schema, args);
 
         // Then
         assertThat(underTest.cardinality()).isEqualTo(2);
-        assertThat(underTest.has('f')).isTrue();
+        assertThat(underTest.has("first")).isTrue();
+        assertThat(underTest.has("second")).isTrue();
     }
 
 }

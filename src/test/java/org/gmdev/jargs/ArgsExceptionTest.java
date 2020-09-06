@@ -45,7 +45,7 @@ class ArgsExceptionTest {
     @Test
     void itShouldGetUnexpectedMessage() throws Exception {
         // Given
-        underTest = new ArgsException(UNEXPECTED_ARGUMENT, 'x', null);
+        underTest = new ArgsException(UNEXPECTED_ARGUMENT, "x", null);
 
         // When
         // Then
@@ -56,7 +56,7 @@ class ArgsExceptionTest {
     @Test
     void itShouldGetMissingStringMessage() throws Exception {
         // Given
-        underTest = new ArgsException(MISSING_STRING, 'x', null);
+        underTest = new ArgsException(MISSING_STRING, "x", null);
 
         // When
         // Then
@@ -67,7 +67,7 @@ class ArgsExceptionTest {
     @Test
     void itShouldGetMissingIntegerMessage() throws Exception {
         // Given
-        underTest = new ArgsException(MISSING_INTEGER, 'x', null);
+        underTest = new ArgsException(MISSING_INTEGER, "x", null);
 
         // When
         // Then
@@ -78,7 +78,7 @@ class ArgsExceptionTest {
     @Test
     void itShouldGetInvalidIntegerMessage() throws Exception {
         // Given
-        underTest = new ArgsException(INVALID_INTEGER, 'x', "six");
+        underTest = new ArgsException(INVALID_INTEGER, "x", "six");
 
         // When
         // Then
@@ -89,7 +89,7 @@ class ArgsExceptionTest {
     @Test
     void itShouldGetMissingDoubleMessage() throws Exception {
         // Given
-        underTest = new ArgsException(MISSING_DOUBLE, 'x', null);
+        underTest = new ArgsException(MISSING_DOUBLE, "x", null);
 
         // When
         // Then
@@ -100,7 +100,7 @@ class ArgsExceptionTest {
     @Test
     void itShouldGetInvalidDoubleMessage() throws Exception {
         // Given
-        underTest = new ArgsException(INVALID_DOUBLE, 'x', "six.three");
+        underTest = new ArgsException(INVALID_DOUBLE, "x", "six.three");
 
         // When
         // Then
