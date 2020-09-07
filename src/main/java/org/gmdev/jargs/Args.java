@@ -8,11 +8,14 @@ import static org.gmdev.jargs.ArgsException.ErrorCode.*;
 
 public class Args {
 
-    private final Set<String> argsFound;
-    private final Map<String, ArgumentMarshaler> marshalers;
+    private Set<String> argsFound;
+    private Map<String, ArgumentMarshaler> marshalers;
     private ListIterator<String> currentArgument;
 
     public Args(String schema, String[] args) throws ArgsException {
+        if (schema == null || args == null)
+            throw new ArgsException("FATAL: Not null violation error");
+
         argsFound = new HashSet<>();
         marshalers = new HashMap<>();
 
@@ -21,36 +24,36 @@ public class Args {
     }
 
     private void parseSchema(String schema) throws ArgsException {
-        for (String element : schema.split(","))
-            if (element.length() > 0)
-                parseSchemaElement(element.trim());
+        for (String schemaElement : schema.split(","))
+            if (schemaElement.length() > 0)
+                parseSchemaElement(schemaElement.trim());
     }
 
-    private void parseSchemaElement(String element) throws ArgsException {
-        String elementId = element.substring(0, element.length() - 1);
-        String elementTail = element.substring(element.length() - 1);
+    private void parseSchemaElement(String schemaElement) throws ArgsException {
+        String elementName = schemaElement.substring(0, schemaElement.length() - 1);
+        String elementType = schemaElement.substring(schemaElement.length() - 1);
 
-        validateSchemaElement(elementId);
+        validateSchemaElement(elementName, elementType);
 
-        if (elementTail.equals("%"))
-            marshalers.put(elementId, new BooleanArgumentMarshaler());
-        else if (elementTail.equals("*"))
-            marshalers.put(elementId, new StringArgumentMarshaler());
-        else if (elementTail.equals("#"))
-            marshalers.put(elementId, new IntegerArgumentMarshaler());
-        else if (elementTail.equals("@"))
-            marshalers.put(elementId, new DoubleArgumentMarshaler());
+        if (elementType.equals("%"))
+            marshalers.put(elementName, new BooleanArgumentMarshaler());
+        else if (elementType.equals("*"))
+            marshalers.put(elementName, new StringArgumentMarshaler());
+        else if (elementType.equals("#"))
+            marshalers.put(elementName, new IntegerArgumentMarshaler());
+        else if (elementType.equals("@"))
+            marshalers.put(elementName, new DoubleArgumentMarshaler());
         else
-            throw new ArgsException(INVALID_FORMAT, elementId, elementTail);
+            throw new ArgsException(INVALID_SCHEMA_ELEMENT_TYPE, elementType);
     }
 
-    private void validateSchemaElement(String elementId) throws ArgsException {
-        if (elementId.length() == 0)
-            throw new ArgsException(INVALID_ARGUMENT_NAME);
+    private void validateSchemaElement(String elementName, String elementType) throws ArgsException {
+        if (elementName.isBlank())
+            throw new ArgsException(EMPTY_SCHEMA_ELEMENT_NAME, elementName+elementType);
 
-        for (char c : elementId.toCharArray())
+        for (char c : elementName.toCharArray())
             if (!Character.isLetter(c))
-                throw new ArgsException(INVALID_ARGUMENT_NAME, elementId, null);
+                throw new ArgsException(INVALID_SCHEMA_ELEMENT_NAME, elementName+elementType);
     }
 
     private void parseArgumentStrings(List<String> argsList) throws ArgsException {
@@ -72,7 +75,7 @@ public class Args {
         try {
             am.set(currentArgument);
         } catch (ArgsException e) {
-            e.setErrorArgumentId(argChar);
+            e.setErrorArgumentName(argChar);
             throw e;
         }
     }

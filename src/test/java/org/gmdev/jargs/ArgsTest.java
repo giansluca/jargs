@@ -21,6 +21,32 @@ class ArgsTest {
     }
 
     @Test
+    void isShouldThrowIfSchemaIsNull() throws ArgsException {
+        // Given
+        String schema = null;
+        String[] args = {};
+
+        // When
+        // Then
+        assertThatThrownBy(() -> new Args(schema, args))
+                .isInstanceOf(ArgsException.class)
+                .hasMessageContaining("FATAL: Not null violation error");
+    }
+
+    @Test
+    void isShouldThrowIfArgumentArrayIsNull() throws ArgsException {
+        // Given
+        String schema = "";
+        String[] args = null;
+
+        // When
+        // Then
+        assertThatThrownBy(() -> new Args(schema, args))
+                .isInstanceOf(ArgsException.class)
+                .hasMessageContaining("FATAL: Not null violation error");
+    }
+
+    @Test
     void itShouldDoNothingIfNoSchemaAndNoArguments() throws ArgsException {
         // Given
         String schema = "";
@@ -34,7 +60,22 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldThrowIfNoSchemaAndOneArgumentId() {
+    void isShouldThrowIfSchemaHasNotElementName() {
+        // Given
+        String schema = "*";
+        String[] args = new String[0];
+
+        ArgsException e = new ArgsException(EMPTY_SCHEMA_ELEMENT_NAME, "*");
+
+        // When
+        // Then
+        assertThatThrownBy(() -> new Args(schema, args))
+                .isInstanceOf(ArgsException.class)
+                .isEqualToComparingFieldByField(e);
+    }
+
+    @Test
+    void itShouldThrowIfNoSchemaAndOneArgumentName() {
         // Given
         String schema = "";
         String[] args = {"-id"};
@@ -45,12 +86,12 @@ class ArgsTest {
         } catch (ArgsException e) {
             // Then
             assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
-            assertThat(e.getErrorArgumentId()).isEqualTo("id");
+            assertThat(e.getErrorArgumentName()).isEqualTo("id");
         }
     }
 
     @Test
-    void itShouldThrowIfNoSchemaAndMultipleArgumentsId() {
+    void itShouldThrowIfNoSchemaAndMultipleArgumentsName() {
         // Given
         String schema = "";
         String[] args = {"-id1", "-id2"};
@@ -61,12 +102,12 @@ class ArgsTest {
         } catch (ArgsException e) {
             // Then
             assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
-            assertThat(e.getErrorArgumentId()).isEqualTo("id1");
+            assertThat(e.getErrorArgumentName()).isEqualTo("id1");
         }
     }
 
     @Test
-    void isShouldThrowIfArgumentIdNotStartsWithHyphen() throws ArgsException {
+    void isShouldThrowIfArgumentNameDoesNotStartWithHyphen() {
         // Given
         String schema = "name*";
         String[] args = {"name", "gians"};
@@ -80,29 +121,15 @@ class ArgsTest {
             .isEqualToComparingFieldByField(e);
     }
 
-    @Test
-    void isShouldThrowIfArgumentSchemaIfContainsOnlySymbol() {
-        // Given
-        String schema = "*";
-        String[] args = new String[0];
-
-        ArgsException e = new ArgsException(INVALID_ARGUMENT_NAME);
-
-        // When
-        // Then
-        assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
-                .isEqualToComparingFieldByField(e);
-    }
 
     @Test
-    void itShouldThrowIfSchemaArgumentIdContainsNotALetter() {
+    void itShouldThrowIfSchemaElementContainsOtherThanALetter() {
         // Given
         String schema = "_id*";
         String[] args = new String[0];
 
         ArgsException e = new ArgsException(
-                ArgsException.ErrorCode.INVALID_ARGUMENT_NAME, "_id", null);
+                INVALID_SCHEMA_ELEMENT_NAME, "_id*");
 
         // When
         // Then
@@ -112,13 +139,13 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldThrowIfSchemaFormatIsInvalid() {
+    void itShouldThrowIfSchemaElementFormatIsInvalid() {
         // Given
         String schema = "id&";
         String[] args = new String[0];
 
         ArgsException e = new ArgsException(
-                ArgsException.ErrorCode.INVALID_FORMAT, "id", "&");
+                ArgsException.ErrorCode.INVALID_SCHEMA_ELEMENT_TYPE, "&");
 
         // When
         // Then
@@ -128,7 +155,7 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldThrowIfArgumentIdNotMatchingSchemaArgumentId() {
+    void itShouldThrowIfArgumentNameDoesNotMatchElementName() {
         // Given
         String schema = "id%";
         String[] args = {"-idA"};

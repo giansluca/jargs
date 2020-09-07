@@ -4,7 +4,7 @@ import static org.gmdev.jargs.ArgsException.ErrorCode.OK;
 
 public class ArgsException extends Exception {
 
-    private String errorArgumentId = "";
+    private String errorArgumentName = "";
     private String errorParameter;
     private ErrorCode errorCode = OK;
 
@@ -21,18 +21,18 @@ public class ArgsException extends Exception {
         this.errorParameter = errorParameter;
     }
 
-    public ArgsException(ErrorCode errorCode, String errorArgumentId, String errorParameter) {
+    public ArgsException(ErrorCode errorCode, String errorArgumentName, String errorParameter) {
         this.errorCode = errorCode;
-        this.errorArgumentId = errorArgumentId;
+        this.errorArgumentName = errorArgumentName;
         this.errorParameter = errorParameter;
     }
 
-    public String getErrorArgumentId() {
-        return errorArgumentId;
+    public String getErrorArgumentName() {
+        return errorArgumentName;
     }
 
-    public void setErrorArgumentId(String errorArgumentId) {
-        this.errorArgumentId = errorArgumentId;
+    public void setErrorArgumentName(String errorArgumentName) {
+        this.errorArgumentName = errorArgumentName;
     }
 
     public String getErrorParameter() {
@@ -55,24 +55,28 @@ public class ArgsException extends Exception {
         switch (errorCode) {
             case OK:
                 throw new Exception("TILT: Should not get here");
+            case INVALID_SCHEMA_ELEMENT_TYPE:
+                return String.format("'%s' is not a valid schema element type", errorParameter);
+            case EMPTY_SCHEMA_ELEMENT_NAME:
+                return String.format("Schema element name is empty: '%s'", errorParameter);
+            case INVALID_SCHEMA_ELEMENT_NAME:
+                return String.format("'%s' is not a valid schema element name", errorParameter);
             case UNEXPECTED_ARGUMENT:
-                return String.format("Argument -%s unexpected", errorArgumentId);
+                return String.format("Argument -%s unexpected", errorArgumentName);
             case INVALID_ARGUMENT_NAME:
-                return String.format("'%s' is not a valid argument name", errorArgumentId);
-            case INVALID_FORMAT:
-                return String.format("'%s' is not a valid argument parameter", errorParameter);
+                return String.format("'%s' is not a valid argument name", errorArgumentName);
             case MISSING_STRING:
-                return String.format("Could not find string parameter for -%s", errorArgumentId);
+                return String.format("Could not find string parameter for -%s", errorArgumentName);
             case MISSING_INTEGER:
-                return String.format("Could not find integer parameter for -%s", errorArgumentId);
+                return String.format("Could not find integer parameter for -%s", errorArgumentName);
             case INVALID_INTEGER:
                 return String.format(
-                        "Argument -%s expects an integer but was '%s'", errorArgumentId, errorParameter);
+                        "Argument -%s expects an integer but was '%s'", errorArgumentName, errorParameter);
             case MISSING_DOUBLE:
-                return String.format("Could not find double parameter for -%s", errorArgumentId);
+                return String.format("Could not find double parameter for -%s", errorArgumentName);
             case INVALID_DOUBLE:
                 return String.format(
-                        "Argument -%s expects a double but was '%s'", errorArgumentId, errorParameter);
+                        "Argument -%s expects a double but was '%s'", errorArgumentName, errorParameter);
             default:
                 return "";
         }
@@ -80,8 +84,9 @@ public class ArgsException extends Exception {
 
     public enum ErrorCode {
         OK("ok"),
-        NO_CODE("No code"),
-        INVALID_FORMAT("Invalid format"),
+        INVALID_SCHEMA_ELEMENT_TYPE("Invalid schema element type"),
+        EMPTY_SCHEMA_ELEMENT_NAME("Empty schema element name"),
+        INVALID_SCHEMA_ELEMENT_NAME("Invalid schema name"),
         UNEXPECTED_ARGUMENT("Unexpected argument"),
         INVALID_ARGUMENT_NAME("Invalid argument name"),
         MISSING_STRING("Missing string"),
