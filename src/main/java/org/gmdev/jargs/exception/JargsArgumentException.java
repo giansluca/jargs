@@ -5,6 +5,7 @@ import static org.gmdev.jargs.exception.ErrorCode.OK;
 public class JargsArgumentException extends JargsException {
 
     String errorArgumentName;
+    String errorArgumentValue;
     ErrorCode errorCode = OK;
 
     public JargsArgumentException(String message) {
