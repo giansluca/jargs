@@ -5,8 +5,8 @@ import org.gmdev.jargs.ArgsException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import static org.gmdev.jargs.ArgsException.ErrorCode.INVALID_INTEGER;
-import static org.gmdev.jargs.ArgsException.ErrorCode.MISSING_INTEGER;
+import static org.gmdev.jargs.exception.ErrorCode.INVALID_INTEGER;
+import static org.gmdev.jargs.exception.ErrorCode.MISSING_INTEGER;
 
 public class IntegerArgumentMarshaler implements ArgumentMarshaler {
 

@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.gmdev.jargs.ArgsException.ErrorCode.*;
+import static org.gmdev.jargs.exception.ErrorCode.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class ArgsTest {
 
@@ -78,7 +79,7 @@ class ArgsTest {
     void itShouldThrowIfNoSchemaAndOneArgumentName() {
         // Given
         String schema = "";
-        String[] args = {"-id"};
+        String[] args = {"-test"};
 
         try {
             // When
@@ -86,7 +87,7 @@ class ArgsTest {
         } catch (ArgsException e) {
             // Then
             assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
-            assertThat(e.getErrorArgumentName()).isEqualTo("id");
+            assertThat(e.getErrorArgumentName()).isEqualTo("test");
         }
     }
 
@@ -94,7 +95,7 @@ class ArgsTest {
     void itShouldThrowIfNoSchemaAndMultipleArgumentsName() {
         // Given
         String schema = "";
-        String[] args = {"-id1", "-id2"};
+        String[] args = {"-first", "-second"};
 
         try {
             // When
@@ -102,7 +103,7 @@ class ArgsTest {
         } catch (ArgsException e) {
             // Then
             assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
-            assertThat(e.getErrorArgumentName()).isEqualTo("id1");
+            assertThat(e.getErrorArgumentName()).isEqualTo("first");
         }
     }
 
@@ -125,11 +126,11 @@ class ArgsTest {
     @Test
     void itShouldThrowIfSchemaElementContainsOtherThanALetter() {
         // Given
-        String schema = "_id*";
+        String schema = "_test*";
         String[] args = new String[0];
 
         ArgsException e = new ArgsException(
-                INVALID_SCHEMA_ELEMENT_NAME, "_id*");
+                INVALID_SCHEMA_ELEMENT_NAME, "_test*");
 
         // When
         // Then
@@ -141,11 +142,10 @@ class ArgsTest {
     @Test
     void itShouldThrowIfSchemaElementFormatIsInvalid() {
         // Given
-        String schema = "id&";
+        String schema = "test&";
         String[] args = new String[0];
 
-        ArgsException e = new ArgsException(
-                ArgsException.ErrorCode.INVALID_SCHEMA_ELEMENT_TYPE, "&");
+        ArgsException e = new ArgsException(INVALID_SCHEMA_ELEMENT_TYPE, "&");
 
         // When
         // Then
@@ -155,13 +155,12 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldThrowIfArgumentNameDoesNotMatchElementName() {
+    void itShouldThrowIfArgumentNameDoesNotMatchSchemaElementName() {
         // Given
-        String schema = "id%";
-        String[] args = {"-idA"};
+        String schema = "testA%";
+        String[] args = {"-testB"};
 
-        ArgsException e = new ArgsException(
-                ArgsException.ErrorCode.UNEXPECTED_ARGUMENT, "idA", null);
+        ArgsException e = new ArgsException(UNEXPECTED_ARGUMENT, "testB", null);
 
         // When
         // Then
@@ -308,18 +307,31 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldReturnTheCorrectArgumentsNumber() throws ArgsException {
+    void itShouldSetAllTheArguments() throws Exception {
         // Given
-        String schema = "first*, second*";
-        String[] args = {"-first", "first-value", "-second", "second-value"};
+        String schema = "first*, second#, third%, forth@";
+        String[] args = {"-first", "first-value", "-second", "2", "-third", "-forth", "3.33"};
 
         // When
-        underTest = new Args(schema, args);
+        try {
+            underTest = new Args(schema, args);
+        } catch (ArgsException e) {
+            System.out.println(e.errorMessage());
+            fail();
+        }
 
         // Then
-        assertThat(underTest.cardinality()).isEqualTo(2);
+        assertThat(underTest.cardinality()).isEqualTo(4);
         assertThat(underTest.has("first")).isTrue();
         assertThat(underTest.has("second")).isTrue();
+        assertThat(underTest.has("third")).isTrue();
+        assertThat(underTest.has("forth")).isTrue();
+        assertThat(underTest.has("fifth")).isFalse();
+
+        assertThat(underTest.getString("first")).isEqualTo("first-value");
+        assertThat(underTest.getInt("second")).isEqualTo(2);
+        assertThat(underTest.getBoolean("third")).isTrue();
+        assertThat(underTest.getDouble("forth")).isEqualTo(3.33);
     }
 
 }
