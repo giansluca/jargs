@@ -1,6 +1,8 @@
 package org.gmdev.jargs.marshalers;
 
 import org.gmdev.jargs.ArgsException;
+import org.gmdev.jargs.exception.JargsArgumentException;
+import org.gmdev.jargs.exception.JargsException;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -11,15 +13,15 @@ public class DoubleArgumentMarshaler implements ArgumentMarshaler {
     private double doubleValue;
 
     @Override
-    public void set(Iterator<String> currentArgument) throws ArgsException {
+    public void set(Iterator<String> currentArgument) throws JargsException {
         String parameter = null;
         try {
             parameter = currentArgument.next();
             doubleValue = Double.parseDouble(parameter);
         } catch (NoSuchElementException e) {
-            throw new ArgsException(MISSING_DOUBLE);
+            throw new JargsArgumentException(MISSING_DOUBLE);
         } catch (NumberFormatException e) {
-            throw new ArgsException(INVALID_DOUBLE, parameter);
+            throw new JargsArgumentException(INVALID_DOUBLE, null, parameter);
         }
     }
 

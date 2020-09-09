@@ -10,6 +10,9 @@ public class ArgsException extends Exception {
     private String errorParameter;
     private ErrorCode errorCode = OK;
 
+    public ArgsException() {
+    }
+
     public ArgsException(String message) {
         super(message);
     }

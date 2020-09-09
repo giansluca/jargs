@@ -1,5 +1,8 @@
 package org.gmdev.jargs;
 
+import org.gmdev.jargs.exception.JargsArgumentException;
+import org.gmdev.jargs.exception.JargsException;
+import org.gmdev.jargs.exception.JargsSchemaException;
 import org.gmdev.jargs.marshalers.*;
 
 import java.util.*;
@@ -12,9 +15,9 @@ public class Args {
     private Map<String, ArgumentMarshaler> marshalers;
     private ListIterator<String> currentArgument;
 
-    public Args(String schema, String[] args) throws ArgsException {
+    public Args(String schema, String[] args) throws JargsException {
         if (schema == null || args == null)
-            throw new ArgsException("FATAL: Not null violation error");
+            throw new JargsException("FATAL: Not null violation error");
 
         argsFound = new HashSet<>();
         marshalers = new HashMap<>();
@@ -23,13 +26,13 @@ public class Args {
         parseArgumentStrings(Arrays.asList(args));
     }
 
-    private void parseSchema(String schema) throws ArgsException {
+    private void parseSchema(String schema) throws JargsException {
         for (String schemaElement : schema.split(","))
             if (schemaElement.length() > 0)
                 parseSchemaElement(schemaElement.trim());
     }
 
-    private void parseSchemaElement(String schemaElement) throws ArgsException {
+    private void parseSchemaElement(String schemaElement) throws JargsException {
         String elementName = schemaElement.substring(0, schemaElement.length() - 1);
         String elementType = schemaElement.substring(schemaElement.length() - 1);
 
@@ -44,37 +47,37 @@ public class Args {
         else if (elementType.equals("@"))
             marshalers.put(elementName, new DoubleArgumentMarshaler());
         else
-            throw new ArgsException(INVALID_SCHEMA_ELEMENT_TYPE, elementType);
+            throw new JargsSchemaException(INVALID_SCHEMA_ELEMENT_TYPE, elementType);
     }
 
-    private void validateSchemaElement(String elementName, String elementType) throws ArgsException {
+    private void validateSchemaElement(String elementName, String elementType) throws JargsException {
         if (elementName.isBlank())
-            throw new ArgsException(EMPTY_SCHEMA_ELEMENT_NAME, elementName+elementType);
+            throw new JargsSchemaException(EMPTY_SCHEMA_ELEMENT_NAME, elementName+elementType);
 
         for (char c : elementName.toCharArray())
             if (!Character.isLetter(c))
-                throw new ArgsException(INVALID_SCHEMA_ELEMENT_NAME, elementName+elementType);
+                throw new JargsSchemaException(INVALID_SCHEMA_ELEMENT_NAME, elementName);
     }
 
-    private void parseArgumentStrings(List<String> argsList) throws ArgsException {
+    private void parseArgumentStrings(List<String> argsList) throws JargsException {
         for (currentArgument = argsList.listIterator(); currentArgument.hasNext(); ) {
             String argument = currentArgument.next();
             if(argument.startsWith("-"))
                 parseArgument(argument.substring(1));
             else
-                throw new ArgsException(INVALID_ARGUMENT_NAME, argument, null);
+                throw new JargsArgumentException(INVALID_ARGUMENT_NAME, argument, null);
         }
     }
 
-    private void parseArgument(String argument) throws ArgsException {
+    private void parseArgument(String argument) throws JargsException {
         ArgumentMarshaler am = marshalers.get(argument);
         if (am == null)
-            throw new ArgsException(UNEXPECTED_ARGUMENT, argument, null);
+            throw new JargsArgumentException(UNEXPECTED_ARGUMENT, argument, null);
 
         argsFound.add(argument);
         try {
             am.set(currentArgument);
-        } catch (ArgsException e) {
+        } catch (JargsArgumentException e) {
             e.setErrorArgumentName(argument);
             throw e;
         }

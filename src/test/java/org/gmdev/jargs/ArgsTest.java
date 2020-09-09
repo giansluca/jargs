@@ -1,5 +1,8 @@
 package org.gmdev.jargs;
 
+import org.gmdev.jargs.exception.JargsArgumentException;
+import org.gmdev.jargs.exception.JargsException;
+import org.gmdev.jargs.exception.JargsSchemaException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +25,7 @@ class ArgsTest {
     }
 
     @Test
-    void isShouldThrowIfSchemaIsNull() throws ArgsException {
+    void isShouldThrowIfSchemaIsNull() {
         // Given
         String schema = null;
         String[] args = {};
@@ -30,12 +33,12 @@ class ArgsTest {
         // When
         // Then
         assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
+                .isInstanceOf(JargsException.class)
                 .hasMessageContaining("FATAL: Not null violation error");
     }
 
     @Test
-    void isShouldThrowIfArgumentArrayIsNull() throws ArgsException {
+    void isShouldThrowIfArgumentArrayIsNull() {
         // Given
         String schema = "";
         String[] args = null;
@@ -43,12 +46,12 @@ class ArgsTest {
         // When
         // Then
         assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
+                .isInstanceOf(JargsException.class)
                 .hasMessageContaining("FATAL: Not null violation error");
     }
 
     @Test
-    void itShouldDoNothingIfNoSchemaAndNoArguments() throws ArgsException {
+    void itShouldDoNothingIfNoSchemaAndNoArguments() throws Exception {
         // Given
         String schema = "";
         String[] args = new String[0];
@@ -66,17 +69,17 @@ class ArgsTest {
         String schema = "*";
         String[] args = new String[0];
 
-        ArgsException e = new ArgsException(EMPTY_SCHEMA_ELEMENT_NAME, "*");
+        JargsSchemaException e = new JargsSchemaException(EMPTY_SCHEMA_ELEMENT_NAME, "*");
 
         // When
         // Then
         assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
+                .isInstanceOf(JargsSchemaException.class)
                 .isEqualToComparingFieldByField(e);
     }
 
     @Test
-    void itShouldThrowIfNoSchemaAndOneArgumentName() {
+    void itShouldThrowIfNoSchemaAndOneArgumentName() throws Exception {
         // Given
         String schema = "";
         String[] args = {"-test"};
@@ -84,7 +87,7 @@ class ArgsTest {
         try {
             // When
             underTest = new Args(schema, args);
-        } catch (ArgsException e) {
+        } catch (JargsArgumentException e) {
             // Then
             assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
             assertThat(e.getErrorArgumentName()).isEqualTo("test");
@@ -92,7 +95,7 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldThrowIfNoSchemaAndMultipleArgumentsName() {
+    void itShouldThrowIfNoSchemaAndMultipleArgumentsName() throws Exception {
         // Given
         String schema = "";
         String[] args = {"-first", "-second"};
@@ -100,7 +103,7 @@ class ArgsTest {
         try {
             // When
             underTest = new Args(schema, args);
-        } catch (ArgsException e) {
+        } catch (JargsArgumentException e) {
             // Then
             assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
             assertThat(e.getErrorArgumentName()).isEqualTo("first");
@@ -113,12 +116,12 @@ class ArgsTest {
         String schema = "name*";
         String[] args = {"name", "gians"};
 
-        ArgsException e = new ArgsException(INVALID_ARGUMENT_NAME, "name", null);
+        JargsArgumentException e = new JargsArgumentException(INVALID_ARGUMENT_NAME, "name", null);
 
         // When
         // Then
         assertThatThrownBy(() -> underTest = new Args(schema, args))
-            .isInstanceOf(ArgsException.class)
+            .isInstanceOf(JargsArgumentException.class)
             .isEqualToComparingFieldByField(e);
     }
 
@@ -129,13 +132,12 @@ class ArgsTest {
         String schema = "_test*";
         String[] args = new String[0];
 
-        ArgsException e = new ArgsException(
-                INVALID_SCHEMA_ELEMENT_NAME, "_test*");
+        JargsSchemaException e = new JargsSchemaException(INVALID_SCHEMA_ELEMENT_NAME, "_test");
 
         // When
         // Then
         assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
+                .isInstanceOf(JargsSchemaException.class)
                 .isEqualToComparingFieldByField(e);
     }
 
@@ -145,12 +147,12 @@ class ArgsTest {
         String schema = "test&";
         String[] args = new String[0];
 
-        ArgsException e = new ArgsException(INVALID_SCHEMA_ELEMENT_TYPE, "&");
+        JargsSchemaException e = new JargsSchemaException(INVALID_SCHEMA_ELEMENT_TYPE, "&");
 
         // When
         // Then
         assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
+                .isInstanceOf(JargsSchemaException.class)
                 .isEqualToComparingFieldByField(e);
     }
 
@@ -160,17 +162,17 @@ class ArgsTest {
         String schema = "testA%";
         String[] args = {"-testB"};
 
-        ArgsException e = new ArgsException(UNEXPECTED_ARGUMENT, "testB", null);
+        JargsArgumentException e = new JargsArgumentException(UNEXPECTED_ARGUMENT, "testB", null);
 
         // When
         // Then
         assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
+                .isInstanceOf(JargsArgumentException.class)
                 .isEqualToComparingFieldByField(e);
     }
 
     @Test
-    void itShouldSetBooleanValue() throws ArgsException {
+    void itShouldSetBooleanValue() throws Exception {
         // Given
         String schema = "bool%";
         String[] args = {"-bool"};
@@ -190,17 +192,17 @@ class ArgsTest {
         String schema = "string*";
         String[] args = {"-string"};
 
-        ArgsException e = new ArgsException(MISSING_STRING, "string", null);
+        JargsArgumentException e = new JargsArgumentException(MISSING_STRING, "string", null);
 
         // When
         // Then
         assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
+                .isInstanceOf(JargsArgumentException.class)
                 .isEqualToComparingFieldByField(e);
     }
 
     @Test
-    void itShouldSetStringValues() throws ArgsException {
+    void itShouldSetStringValues() throws Exception {
         // Given
         String schema = "name*, job*";
         String[] args = {"-name", "gians", "-job", "developer"};
@@ -222,12 +224,12 @@ class ArgsTest {
         String schema = "int#";
         String[] args = {"-int", "six"};
 
-        ArgsException e = new ArgsException(INVALID_INTEGER, "int", "six");
+        JargsArgumentException e = new JargsArgumentException(INVALID_INTEGER, "int", "six");
 
         // When
         // Then
         assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
+                .isInstanceOf(JargsArgumentException.class)
                 .isEqualToComparingFieldByField(e);
     }
 
@@ -242,12 +244,12 @@ class ArgsTest {
         // When
         // Then
         assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
+                .isInstanceOf(JargsArgumentException.class)
                 .isEqualToComparingFieldByField(e);
     }
 
     @Test
-    void itShouldSetIntegerValue() throws ArgsException {
+    void itShouldSetIntegerValue() throws Exception {
         // Given
         String schema = "int#";
         String[] args = {"-int", "99"};
@@ -267,12 +269,12 @@ class ArgsTest {
         String schema = "double@";
         String[] args = {"-double", "six"};
 
-        ArgsException e = new ArgsException(INVALID_DOUBLE, "double", "six");
+        JargsArgumentException e = new JargsArgumentException(INVALID_DOUBLE, "double", "six");
 
         // When
         // Then
         assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
+                .isInstanceOf(JargsArgumentException.class)
                 .isEqualToComparingFieldByField(e);
     }
 
@@ -282,17 +284,17 @@ class ArgsTest {
         String schema = "double@";
         String[] args = {"-double"};
 
-        ArgsException e = new ArgsException(MISSING_DOUBLE, "double", null);
+        JargsArgumentException e = new JargsArgumentException(MISSING_DOUBLE, "double", null);
 
         // When
         // Then
         assertThatThrownBy(() -> new Args(schema, args))
-                .isInstanceOf(ArgsException.class)
+                .isInstanceOf(JargsArgumentException.class)
                 .isEqualToComparingFieldByField(e);
     }
 
     @Test
-    void itShouldSetDoubleValue() throws ArgsException {
+    void itShouldSetDoubleValue() throws Exception {
         // Given
         String schema = "double@";
         String[] args = {"-double", "99.05"};
@@ -307,7 +309,7 @@ class ArgsTest {
     }
 
     @Test
-    void itShouldSetAllTheArguments() throws Exception {
+    void itShouldSetAllTheArguments() {
         // Given
         String schema = "first*, second#, third%, forth@";
         String[] args = {"-first", "first-value", "-second", "2", "-third", "-forth", "3.33"};
@@ -315,8 +317,8 @@ class ArgsTest {
         // When
         try {
             underTest = new Args(schema, args);
-        } catch (ArgsException e) {
-            System.out.println(e.errorMessage());
+        } catch (JargsException e) {
+            e.printStackTrace();
             fail();
         }
 

@@ -1,6 +1,8 @@
 package org.gmdev.jargs.marshalers;
 
 import org.gmdev.jargs.ArgsException;
+import org.gmdev.jargs.exception.JargsArgumentException;
+import org.gmdev.jargs.exception.JargsException;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -13,15 +15,15 @@ public class IntegerArgumentMarshaler implements ArgumentMarshaler {
     private int intValue = 0;
 
     @Override
-    public void set(Iterator<String> currentArgument) throws ArgsException {
+    public void set(Iterator<String> currentArgument) throws JargsException {
         String parameter = null;
         try {
             parameter = currentArgument.next();
             intValue = Integer.parseInt(parameter);
         } catch (NoSuchElementException e) {
-            throw new ArgsException(MISSING_INTEGER);
+            throw new JargsArgumentException(MISSING_INTEGER);
         } catch (NumberFormatException e) {
-            throw new ArgsException(INVALID_INTEGER, parameter);
+            throw new JargsArgumentException(INVALID_INTEGER, null, parameter);
         }
     }
 

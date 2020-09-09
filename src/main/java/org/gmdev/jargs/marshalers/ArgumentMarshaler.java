@@ -1,10 +1,10 @@
 package org.gmdev.jargs.marshalers;
 
-import org.gmdev.jargs.ArgsException;
+import org.gmdev.jargs.exception.JargsException;
 
 import java.util.Iterator;
 
 public interface ArgumentMarshaler {
 
-    void set(Iterator<String> currentArgument) throws ArgsException;
+    void set(Iterator<String> currentArgument) throws JargsException;
 }

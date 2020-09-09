@@ -1,6 +1,8 @@
 package org.gmdev.jargs.marshalers;
 
 import org.gmdev.jargs.ArgsException;
+import org.gmdev.jargs.exception.JargsArgumentException;
+import org.gmdev.jargs.exception.JargsException;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -12,11 +14,11 @@ public class StringArgumentMarshaler implements ArgumentMarshaler {
     private String stringValue = "";
 
     @Override
-    public void set(Iterator<String> currentArgument) throws ArgsException {
+    public void set(Iterator<String> currentArgument) throws JargsException {
         try {
             stringValue = currentArgument.next();
         } catch (NoSuchElementException e) {
-            throw new ArgsException(MISSING_STRING);
+            throw new JargsArgumentException(MISSING_STRING);
         }
     }
 

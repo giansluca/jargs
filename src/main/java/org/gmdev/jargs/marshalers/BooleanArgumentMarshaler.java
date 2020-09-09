@@ -1,6 +1,6 @@
 package org.gmdev.jargs.marshalers;
 
-import org.gmdev.jargs.ArgsException;
+import org.gmdev.jargs.exception.JargsException;
 
 import java.util.Iterator;
 
@@ -9,7 +9,7 @@ public class BooleanArgumentMarshaler implements ArgumentMarshaler {
     private boolean booleanValue = false;
 
     @Override
-    public void set(Iterator<String> currentArgument) throws ArgsException {
+    public void set(Iterator<String> currentArgument) throws JargsException {
         booleanValue = true;
     }
 
