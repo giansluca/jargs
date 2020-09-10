@@ -1,7 +1,5 @@
 package org.gmdev.jargs.exception;
 
-import org.gmdev.jargs.ArgsException;
-
 import static org.gmdev.jargs.exception.ErrorCode.OK;
 
 public class JargsSchemaException extends JargsException {
@@ -21,7 +19,7 @@ public class JargsSchemaException extends JargsException {
     public String getErrorMessage() throws Exception {
         switch (errorCode) {
             case OK:
-                throw new Exception("TILT: Should not get here");
+                throw new Exception("TILT: Should not get here.");
             case INVALID_SCHEMA_ELEMENT_TYPE:
                 return String.format("'%s' is not a valid schema element type.", errorParameter);
             case EMPTY_SCHEMA_ELEMENT_NAME:

@@ -1,6 +1,5 @@
 package org.gmdev.jargs.marshalers;
 
-import org.gmdev.jargs.ArgsException;
 import org.gmdev.jargs.exception.JargsArgumentException;
 import org.gmdev.jargs.exception.JargsException;
 

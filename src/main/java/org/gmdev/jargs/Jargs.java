@@ -9,13 +9,13 @@ import java.util.*;
 
 import static org.gmdev.jargs.exception.ErrorCode.*;
 
-public class Args {
+public class Jargs {
 
     private Set<String> argsFound;
     private Map<String, ArgumentMarshaler> marshalers;
     private ListIterator<String> currentArgument;
 
-    public Args(String schema, String[] args) throws JargsException {
+    public Jargs(String schema, String[] args) throws JargsException {
         if (schema == null || args == null)
             throw new JargsException("FATAL: Not null violation error");
 

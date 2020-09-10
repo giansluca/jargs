@@ -12,9 +12,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.gmdev.jargs.exception.ErrorCode.*;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class ArgsTest {
+class JargsTest {
 
-    Args underTest;
+    Jargs underTest;
 
     @BeforeEach
     void setUp() {
@@ -32,7 +32,7 @@ class ArgsTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> new Args(schema, args))
+        assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsException.class)
                 .hasMessageContaining("FATAL: Not null violation error");
     }
@@ -45,7 +45,7 @@ class ArgsTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> new Args(schema, args))
+        assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsException.class)
                 .hasMessageContaining("FATAL: Not null violation error");
     }
@@ -57,7 +57,7 @@ class ArgsTest {
         String[] args = new String[0];
 
         // When
-        underTest = new Args(schema, args);
+        underTest = new Jargs(schema, args);
 
         // Then
         assertThat(underTest.cardinality()).isEqualTo(0);
@@ -73,7 +73,7 @@ class ArgsTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> new Args(schema, args))
+        assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsSchemaException.class)
                 .isEqualToComparingFieldByField(e);
     }
@@ -86,7 +86,7 @@ class ArgsTest {
 
         try {
             // When
-            underTest = new Args(schema, args);
+            underTest = new Jargs(schema, args);
         } catch (JargsArgumentException e) {
             // Then
             assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
@@ -102,7 +102,7 @@ class ArgsTest {
 
         try {
             // When
-            underTest = new Args(schema, args);
+            underTest = new Jargs(schema, args);
         } catch (JargsArgumentException e) {
             // Then
             assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
@@ -120,7 +120,7 @@ class ArgsTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> underTest = new Args(schema, args))
+        assertThatThrownBy(() -> underTest = new Jargs(schema, args))
             .isInstanceOf(JargsArgumentException.class)
             .isEqualToComparingFieldByField(e);
     }
@@ -136,7 +136,7 @@ class ArgsTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> new Args(schema, args))
+        assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsSchemaException.class)
                 .isEqualToComparingFieldByField(e);
     }
@@ -151,7 +151,7 @@ class ArgsTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> new Args(schema, args))
+        assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsSchemaException.class)
                 .isEqualToComparingFieldByField(e);
     }
@@ -166,7 +166,7 @@ class ArgsTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> new Args(schema, args))
+        assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsArgumentException.class)
                 .isEqualToComparingFieldByField(e);
     }
@@ -178,7 +178,7 @@ class ArgsTest {
         String[] args = {"-bool"};
 
         // When
-        underTest = new Args(schema, args);
+        underTest = new Jargs(schema, args);
 
         // Then
         assertThat(underTest.getBoolean("bool")).isTrue();
@@ -196,7 +196,7 @@ class ArgsTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> new Args(schema, args))
+        assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsArgumentException.class)
                 .isEqualToComparingFieldByField(e);
     }
@@ -208,7 +208,7 @@ class ArgsTest {
         String[] args = {"-name", "gians", "-job", "developer"};
 
         // When
-        underTest = new Args(schema, args);
+        underTest = new Jargs(schema, args);
 
         // Then
         assertThat(underTest.getString("name")).isEqualTo("gians");
@@ -228,7 +228,7 @@ class ArgsTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> new Args(schema, args))
+        assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsArgumentException.class)
                 .isEqualToComparingFieldByField(e);
     }
@@ -239,11 +239,11 @@ class ArgsTest {
         String schema = "int#";
         String[] args = {"-int"};
 
-        ArgsException e = new ArgsException(MISSING_INTEGER, "int", null);
+        JargsArgumentException e = new JargsArgumentException(MISSING_INTEGER, "int", null);
 
         // When
         // Then
-        assertThatThrownBy(() -> new Args(schema, args))
+        assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsArgumentException.class)
                 .isEqualToComparingFieldByField(e);
     }
@@ -255,7 +255,7 @@ class ArgsTest {
         String[] args = {"-int", "99"};
 
         // When
-        underTest = new Args(schema, args);
+        underTest = new Jargs(schema, args);
 
         // Then
         assertThat(underTest.getInt("int")).isEqualTo(99);
@@ -273,7 +273,7 @@ class ArgsTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> new Args(schema, args))
+        assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsArgumentException.class)
                 .isEqualToComparingFieldByField(e);
     }
@@ -288,7 +288,7 @@ class ArgsTest {
 
         // When
         // Then
-        assertThatThrownBy(() -> new Args(schema, args))
+        assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsArgumentException.class)
                 .isEqualToComparingFieldByField(e);
     }
@@ -300,7 +300,7 @@ class ArgsTest {
         String[] args = {"-double", "99.05"};
 
         // When
-        underTest = new Args(schema, args);
+        underTest = new Jargs(schema, args);
 
         // Then
         assertThat(underTest.getDouble("double")).isEqualTo(99.05);
@@ -316,7 +316,7 @@ class ArgsTest {
 
         // When
         try {
-            underTest = new Args(schema, args);
+            underTest = new Jargs(schema, args);
         } catch (JargsException e) {
             e.printStackTrace();
             fail();

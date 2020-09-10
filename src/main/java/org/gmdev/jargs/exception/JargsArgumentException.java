@@ -35,23 +35,23 @@ public class JargsArgumentException extends JargsException {
     public String getErrorMessage() throws Exception {
         switch (errorCode) {
             case OK:
-                throw new Exception("TILT: Should not get here");
+                throw new Exception("TILT: Should not get here.");
             case UNEXPECTED_ARGUMENT:
-                return String.format("Argument -%s unexpected", errorArgumentName);
+                return String.format("Argument name -%s unexpected.", errorArgumentName);
             case INVALID_ARGUMENT_NAME:
-                return String.format("'%s' is not a valid argument name", errorArgumentName);
+                return String.format("'%s' is not a valid argument name.", errorArgumentName);
             case MISSING_STRING:
-                return String.format("Could not find string parameter for -%s", errorArgumentName);
+                return String.format("Could not find string argument value for -%s.", errorArgumentName);
             case MISSING_INTEGER:
-                return String.format("Could not find integer parameter for -%s", errorArgumentName);
+                return String.format("Could not find integer argument value for -%s.", errorArgumentName);
             case INVALID_INTEGER:
                 return String.format(
-                        "Argument -%s expects an integer but was '%s'", errorArgumentName, errorParameter);
+                        "Argument name -%s expects an integer but was '%s'.", errorArgumentName, errorParameter);
             case MISSING_DOUBLE:
-                return String.format("Could not find double parameter for -%s", errorArgumentName);
+                return String.format("Could not find double argument value for -%s.", errorArgumentName);
             case INVALID_DOUBLE:
                 return String.format(
-                        "Argument -%s expects a double but was '%s'", errorArgumentName, errorParameter);
+                        "Argument name -%s expects a double but was '%s'.", errorArgumentName, errorParameter);
             default:
                 return "";
         }
