@@ -1,15 +1,15 @@
-package org.gmdev.jargs;
+package io.github.giansluca.jargs;
 
-import org.gmdev.jargs.exception.JargsArgumentException;
-import org.gmdev.jargs.exception.JargsException;
-import org.gmdev.jargs.exception.JargsSchemaException;
+import io.github.giansluca.jargs.exception.ErrorCode;
+import io.github.giansluca.jargs.exception.JargsArgumentException;
+import io.github.giansluca.jargs.exception.JargsException;
+import io.github.giansluca.jargs.exception.JargsSchemaException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.gmdev.jargs.exception.ErrorCode.*;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class JargsTest {
@@ -69,7 +69,7 @@ class JargsTest {
         String schema = "*";
         String[] args = new String[0];
 
-        JargsSchemaException e = new JargsSchemaException(EMPTY_SCHEMA_ELEMENT_NAME, "*");
+        JargsSchemaException e = new JargsSchemaException(ErrorCode.EMPTY_SCHEMA_ELEMENT_NAME, "*");
 
         // When
         // Then
@@ -89,7 +89,7 @@ class JargsTest {
             underTest = new Jargs(schema, args);
         } catch (JargsArgumentException e) {
             // Then
-            assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.UNEXPECTED_ARGUMENT);
             assertThat(e.getErrorArgumentName()).isEqualTo("test");
         }
     }
@@ -105,7 +105,7 @@ class JargsTest {
             underTest = new Jargs(schema, args);
         } catch (JargsArgumentException e) {
             // Then
-            assertThat(e.getErrorCode()).isEqualTo(UNEXPECTED_ARGUMENT);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.UNEXPECTED_ARGUMENT);
             assertThat(e.getErrorArgumentName()).isEqualTo("first");
         }
     }
@@ -116,7 +116,7 @@ class JargsTest {
         String schema = "name*";
         String[] args = {"name", "gians"};
 
-        JargsArgumentException e = new JargsArgumentException(INVALID_ARGUMENT_NAME, "name", null);
+        JargsArgumentException e = new JargsArgumentException(ErrorCode.INVALID_ARGUMENT_NAME, "name", null);
 
         // When
         // Then
@@ -132,7 +132,7 @@ class JargsTest {
         String schema = "_test*";
         String[] args = new String[0];
 
-        JargsSchemaException e = new JargsSchemaException(INVALID_SCHEMA_ELEMENT_NAME, "_test");
+        JargsSchemaException e = new JargsSchemaException(ErrorCode.INVALID_SCHEMA_ELEMENT_NAME, "_test");
 
         // When
         // Then
@@ -147,7 +147,7 @@ class JargsTest {
         String schema = "test&";
         String[] args = new String[0];
 
-        JargsSchemaException e = new JargsSchemaException(INVALID_SCHEMA_ELEMENT_TYPE, "&");
+        JargsSchemaException e = new JargsSchemaException(ErrorCode.INVALID_SCHEMA_ELEMENT_TYPE, "&");
 
         // When
         // Then
@@ -162,7 +162,7 @@ class JargsTest {
         String schema = "testA%";
         String[] args = {"-testB"};
 
-        JargsArgumentException e = new JargsArgumentException(UNEXPECTED_ARGUMENT, "testB", null);
+        JargsArgumentException e = new JargsArgumentException(ErrorCode.UNEXPECTED_ARGUMENT, "testB", null);
 
         // When
         // Then
@@ -192,7 +192,7 @@ class JargsTest {
         String schema = "string*";
         String[] args = {"-string"};
 
-        JargsArgumentException e = new JargsArgumentException(MISSING_STRING, "string", null);
+        JargsArgumentException e = new JargsArgumentException(ErrorCode.MISSING_STRING, "string", null);
 
         // When
         // Then
@@ -224,7 +224,7 @@ class JargsTest {
         String schema = "int#";
         String[] args = {"-int", "six"};
 
-        JargsArgumentException e = new JargsArgumentException(INVALID_INTEGER, "int", "six");
+        JargsArgumentException e = new JargsArgumentException(ErrorCode.INVALID_INTEGER, "int", "six");
 
         // When
         // Then
@@ -239,7 +239,7 @@ class JargsTest {
         String schema = "int#";
         String[] args = {"-int"};
 
-        JargsArgumentException e = new JargsArgumentException(MISSING_INTEGER, "int", null);
+        JargsArgumentException e = new JargsArgumentException(ErrorCode.MISSING_INTEGER, "int", null);
 
         // When
         // Then
@@ -269,7 +269,7 @@ class JargsTest {
         String schema = "double@";
         String[] args = {"-double", "six"};
 
-        JargsArgumentException e = new JargsArgumentException(INVALID_DOUBLE, "double", "six");
+        JargsArgumentException e = new JargsArgumentException(ErrorCode.INVALID_DOUBLE, "double", "six");
 
         // When
         // Then
@@ -284,7 +284,7 @@ class JargsTest {
         String schema = "double@";
         String[] args = {"-double"};
 
-        JargsArgumentException e = new JargsArgumentException(MISSING_DOUBLE, "double", null);
+        JargsArgumentException e = new JargsArgumentException(ErrorCode.MISSING_DOUBLE, "double", null);
 
         // When
         // Then

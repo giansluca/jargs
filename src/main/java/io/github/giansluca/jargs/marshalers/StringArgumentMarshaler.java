@@ -1,12 +1,11 @@
-package org.gmdev.jargs.marshalers;
+package io.github.giansluca.jargs.marshalers;
 
-import org.gmdev.jargs.exception.JargsArgumentException;
-import org.gmdev.jargs.exception.JargsException;
+import io.github.giansluca.jargs.exception.ErrorCode;
+import io.github.giansluca.jargs.exception.JargsArgumentException;
+import io.github.giansluca.jargs.exception.JargsException;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import static org.gmdev.jargs.exception.ErrorCode.MISSING_STRING;
 
 public class StringArgumentMarshaler implements ArgumentMarshaler {
 
@@ -17,7 +16,7 @@ public class StringArgumentMarshaler implements ArgumentMarshaler {
         try {
             stringValue = currentArgument.next();
         } catch (NoSuchElementException e) {
-            throw new JargsArgumentException(MISSING_STRING);
+            throw new JargsArgumentException(ErrorCode.MISSING_STRING);
         }
     }
 

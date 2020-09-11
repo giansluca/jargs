@@ -1,10 +1,8 @@
-package org.gmdev.jargs.exception;
-
-import static org.gmdev.jargs.exception.ErrorCode.OK;
+package io.github.giansluca.jargs.exception;
 
 public class JargsSchemaException extends JargsException {
 
-    private ErrorCode errorCode = OK;
+    private ErrorCode errorCode = ErrorCode.OK;
     private String errorParameter;
 
     public JargsSchemaException(ErrorCode errorCode, String errorParameter) {

@@ -1,6 +1,6 @@
-package org.gmdev.jargs.marshalers;
+package io.github.giansluca.jargs.marshalers;
 
-import org.gmdev.jargs.exception.JargsException;
+import io.github.giansluca.jargs.exception.JargsException;
 
 import java.util.Iterator;
 

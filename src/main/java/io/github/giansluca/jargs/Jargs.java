@@ -1,13 +1,12 @@
-package org.gmdev.jargs;
+package io.github.giansluca.jargs;
 
-import org.gmdev.jargs.exception.JargsArgumentException;
-import org.gmdev.jargs.exception.JargsException;
-import org.gmdev.jargs.exception.JargsSchemaException;
-import org.gmdev.jargs.marshalers.*;
+import io.github.giansluca.jargs.exception.ErrorCode;
+import io.github.giansluca.jargs.exception.JargsArgumentException;
+import io.github.giansluca.jargs.exception.JargsException;
+import io.github.giansluca.jargs.exception.JargsSchemaException;
+import io.github.giansluca.jargs.marshalers.*;
 
 import java.util.*;
-
-import static org.gmdev.jargs.exception.ErrorCode.*;
 
 public class Jargs {
 
@@ -47,16 +46,16 @@ public class Jargs {
         else if (elementType.equals("@"))
             marshalers.put(elementName, new DoubleArgumentMarshaler());
         else
-            throw new JargsSchemaException(INVALID_SCHEMA_ELEMENT_TYPE, elementType);
+            throw new JargsSchemaException(ErrorCode.INVALID_SCHEMA_ELEMENT_TYPE, elementType);
     }
 
     private void validateSchemaElement(String elementName, String elementType) throws JargsException {
         if (elementName.isBlank())
-            throw new JargsSchemaException(EMPTY_SCHEMA_ELEMENT_NAME, elementName+elementType);
+            throw new JargsSchemaException(ErrorCode.EMPTY_SCHEMA_ELEMENT_NAME, elementName+elementType);
 
         for (char c : elementName.toCharArray())
             if (!Character.isLetter(c))
-                throw new JargsSchemaException(INVALID_SCHEMA_ELEMENT_NAME, elementName);
+                throw new JargsSchemaException(ErrorCode.INVALID_SCHEMA_ELEMENT_NAME, elementName);
     }
 
     private void parseArgumentStrings(List<String> argsList) throws JargsException {
@@ -65,14 +64,14 @@ public class Jargs {
             if(argument.startsWith("-"))
                 parseArgument(argument.substring(1));
             else
-                throw new JargsArgumentException(INVALID_ARGUMENT_NAME, argument, null);
+                throw new JargsArgumentException(ErrorCode.INVALID_ARGUMENT_NAME, argument, null);
         }
     }
 
     private void parseArgument(String argument) throws JargsException {
         ArgumentMarshaler am = marshalers.get(argument);
         if (am == null)
-            throw new JargsArgumentException(UNEXPECTED_ARGUMENT, argument, null);
+            throw new JargsArgumentException(ErrorCode.UNEXPECTED_ARGUMENT, argument, null);
 
         argsFound.add(argument);
         try {

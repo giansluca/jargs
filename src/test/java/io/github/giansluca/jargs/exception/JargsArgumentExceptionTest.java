@@ -1,4 +1,4 @@
-package org.gmdev.jargs.exception;
+package io.github.giansluca.jargs.exception;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.gmdev.jargs.exception.ErrorCode.*;
 
 class JargsArgumentExceptionTest {
 
@@ -23,7 +22,7 @@ class JargsArgumentExceptionTest {
     @Test
     void itShouldThrowWhenGetErrorMessageAndErrorCodeIsOK() {
         // Given
-        underTest = new JargsArgumentException(OK);
+        underTest = new JargsArgumentException(ErrorCode.OK);
 
         // When
         // Then
@@ -35,7 +34,7 @@ class JargsArgumentExceptionTest {
     @Test
     void itShouldGetUnexpectedArgumentMessage() throws Exception {
         // Given
-        underTest = new JargsArgumentException(UNEXPECTED_ARGUMENT, "arg", null);
+        underTest = new JargsArgumentException(ErrorCode.UNEXPECTED_ARGUMENT, "arg", null);
 
         // When
         // Then
@@ -46,7 +45,7 @@ class JargsArgumentExceptionTest {
     @Test
     void itShouldGetInvalidArgumentNameMessage() throws Exception {
         // Given
-        underTest = new JargsArgumentException(INVALID_ARGUMENT_NAME, "arg", null);
+        underTest = new JargsArgumentException(ErrorCode.INVALID_ARGUMENT_NAME, "arg", null);
 
         // When
         // Then
@@ -58,7 +57,7 @@ class JargsArgumentExceptionTest {
     @Test
     void itShouldGetMissingStringMessage() throws Exception {
         // Given
-        underTest = new JargsArgumentException(MISSING_STRING, "arg", null);
+        underTest = new JargsArgumentException(ErrorCode.MISSING_STRING, "arg", null);
 
         // When
         // Then
@@ -69,7 +68,7 @@ class JargsArgumentExceptionTest {
     @Test
     void itShouldGetMissingIntegerMessage() throws Exception {
         // Given
-        underTest = new JargsArgumentException(MISSING_INTEGER, "arg", null);
+        underTest = new JargsArgumentException(ErrorCode.MISSING_INTEGER, "arg", null);
 
         // When
         // Then
@@ -80,7 +79,7 @@ class JargsArgumentExceptionTest {
     @Test
     void itShouldGetInvalidIntegerMessage() throws Exception {
         // Given
-        underTest = new JargsArgumentException(INVALID_INTEGER, "arg", "six");
+        underTest = new JargsArgumentException(ErrorCode.INVALID_INTEGER, "arg", "six");
 
         // When
         // Then
@@ -91,7 +90,7 @@ class JargsArgumentExceptionTest {
     @Test
     void itShouldGetMissingDoubleMessage() throws Exception {
         // Given
-        underTest = new JargsArgumentException(MISSING_DOUBLE, "arg", null);
+        underTest = new JargsArgumentException(ErrorCode.MISSING_DOUBLE, "arg", null);
 
         // When
         // Then
@@ -102,7 +101,7 @@ class JargsArgumentExceptionTest {
     @Test
     void itShouldGetInvalidDoubleMessage() throws Exception {
         // Given
-        underTest = new JargsArgumentException(INVALID_DOUBLE, "arg", "six.three");
+        underTest = new JargsArgumentException(ErrorCode.INVALID_DOUBLE, "arg", "six.three");
 
         // When
         // Then

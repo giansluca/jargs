@@ -1,12 +1,11 @@
-package org.gmdev.jargs.marshalers;
+package io.github.giansluca.jargs.marshalers;
 
-import org.gmdev.jargs.exception.JargsArgumentException;
-import org.gmdev.jargs.exception.JargsException;
+import io.github.giansluca.jargs.exception.ErrorCode;
+import io.github.giansluca.jargs.exception.JargsArgumentException;
+import io.github.giansluca.jargs.exception.JargsException;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import static org.gmdev.jargs.exception.ErrorCode.*;
 
 public class DoubleArgumentMarshaler implements ArgumentMarshaler {
     private double doubleValue;
@@ -18,9 +17,9 @@ public class DoubleArgumentMarshaler implements ArgumentMarshaler {
             parameter = currentArgument.next();
             doubleValue = Double.parseDouble(parameter);
         } catch (NoSuchElementException e) {
-            throw new JargsArgumentException(MISSING_DOUBLE);
+            throw new JargsArgumentException(ErrorCode.MISSING_DOUBLE);
         } catch (NumberFormatException e) {
-            throw new JargsArgumentException(INVALID_DOUBLE, null, parameter);
+            throw new JargsArgumentException(ErrorCode.INVALID_DOUBLE, null, parameter);
         }
     }
 

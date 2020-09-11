@@ -1,4 +1,4 @@
-package org.gmdev.jargs.exception;
+package io.github.giansluca.jargs.exception;
 
 public enum ErrorCode {
     OK("ok"),
