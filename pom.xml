@@ -6,7 +6,7 @@
 
     <groupId>io.github.giansluca</groupId>
     <artifactId>jargs</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <name>Jargs</name>
     <description>Main arguments parser</description>
