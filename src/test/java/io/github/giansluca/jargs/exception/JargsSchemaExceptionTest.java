@@ -21,25 +21,13 @@ class JargsSchemaExceptionTest {
     }
 
     @Test
-    void itShouldThrowWhenGetErrorMessageAndErrorCodeIsOK() {
-        // Given
-        underTest = new JargsSchemaException(OK, null);
-
-        // When
-        // Then
-        assertThatThrownBy(() -> underTest.getErrorMessage())
-                .isInstanceOf(Exception.class)
-                .hasMessageContaining("TILT: Should not get here.");
-    }
-
-    @Test
     void itShouldGetInvalidSchemaElementTypeMessage() throws Exception {
         // Given
         underTest = new JargsSchemaException(INVALID_SCHEMA_ELEMENT_TYPE, "?");
 
         // When
         // Then
-        assertThat(underTest.getErrorMessage())
+        assertThat(underTest.getMessage())
                 .isEqualTo(String.format("'%s' is not a valid schema element type.", "?"));
     }
 
@@ -50,7 +38,7 @@ class JargsSchemaExceptionTest {
 
         // When
         // Then
-        assertThat(underTest.getErrorMessage())
+        assertThat(underTest.getMessage())
                 .isEqualTo(String.format("'%s' is not a valid schema, element name cannot be empty.", "?"));
     }
 
@@ -61,7 +49,7 @@ class JargsSchemaExceptionTest {
 
         // When
         // Then
-        assertThat(underTest.getErrorMessage())
+        assertThat(underTest.getMessage())
                 .isEqualTo(String.format("'%s' is not a valid schema element name.", "?"));
     }
 

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JargsArgumentExceptionTest {
 
@@ -20,92 +19,80 @@ class JargsArgumentExceptionTest {
     }
 
     @Test
-    void itShouldThrowWhenGetErrorMessageAndErrorCodeIsOK() {
-        // Given
-        underTest = new JargsArgumentException(ErrorCode.OK);
-
-        // When
-        // Then
-        assertThatThrownBy(() -> underTest.getErrorMessage())
-                .isInstanceOf(Exception.class)
-                .hasMessageContaining("TILT: Should not get here.");
-    }
-
-    @Test
-    void itShouldGetUnexpectedArgumentMessage() throws Exception {
+    void itShouldGetUnexpectedArgumentMessage() {
         // Given
         underTest = new JargsArgumentException(ErrorCode.UNEXPECTED_ARGUMENT, "arg", null);
 
         // When
         // Then
-        assertThat(underTest.getErrorMessage())
+        assertThat(underTest.getMessage())
                 .isEqualTo(String.format("Argument name -%s unexpected.", "arg"));
     }
 
     @Test
-    void itShouldGetInvalidArgumentNameMessage() throws Exception {
+    void itShouldGetInvalidArgumentNameMessage() {
         // Given
         underTest = new JargsArgumentException(ErrorCode.INVALID_ARGUMENT_NAME, "arg", null);
 
         // When
         // Then
-        assertThat(underTest.getErrorMessage())
+        assertThat(underTest.getMessage())
                 .isEqualTo(String.format("'%s' is not a valid argument name.", "arg"));
     }
 
 
     @Test
-    void itShouldGetMissingStringMessage() throws Exception {
+    void itShouldGetMissingStringMessage() {
         // Given
         underTest = new JargsArgumentException(ErrorCode.MISSING_STRING, "arg", null);
 
         // When
         // Then
-        assertThat(underTest.getErrorMessage())
-                .isEqualTo(String.format("Could not find string argument value for -%s.", "arg"));
+        assertThat(underTest.getMessage())
+                .isEqualTo(String.format("Could not find string argument value for '-%s' .", "arg"));
     }
 
     @Test
-    void itShouldGetMissingIntegerMessage() throws Exception {
+    void itShouldGetMissingIntegerMessage() {
         // Given
         underTest = new JargsArgumentException(ErrorCode.MISSING_INTEGER, "arg", null);
 
         // When
         // Then
-        assertThat(underTest.getErrorMessage())
-                .isEqualTo(String.format("Could not find integer argument value for -%s.", "arg"));
+        assertThat(underTest.getMessage())
+                .isEqualTo(String.format("Could not find integer argument value for '-%s' .", "arg"));
     }
 
     @Test
-    void itShouldGetInvalidIntegerMessage() throws Exception {
+    void itShouldGetInvalidIntegerMessage() {
         // Given
         underTest = new JargsArgumentException(ErrorCode.INVALID_INTEGER, "arg", "six");
 
         // When
         // Then
-        assertThat(underTest.getErrorMessage())
-                .isEqualTo(String.format("Argument name -%s expects an integer but was '%s'.", "arg", "six"));
+        assertThat(underTest.getMessage())
+                .isEqualTo(String.format("Argument name '-%s' expects an integer but was '%s' .", "arg", "six"));
     }
 
     @Test
-    void itShouldGetMissingDoubleMessage() throws Exception {
+    void itShouldGetMissingDoubleMessage() {
         // Given
         underTest = new JargsArgumentException(ErrorCode.MISSING_DOUBLE, "arg", null);
 
         // When
         // Then
-        assertThat(underTest.getErrorMessage())
-                .isEqualTo(String.format("Could not find double argument value for -%s.", "arg"));
+        assertThat(underTest.getMessage())
+                .isEqualTo(String.format("Could not find double argument value for '-%s' .", "arg"));
     }
 
     @Test
-    void itShouldGetInvalidDoubleMessage() throws Exception {
+    void itShouldGetInvalidDoubleMessage() {
         // Given
         underTest = new JargsArgumentException(ErrorCode.INVALID_DOUBLE, "arg", "six.three");
 
         // When
         // Then
-        assertThat(underTest.getErrorMessage())
-                .isEqualTo(String.format("Argument name -%s expects a double but was '%s'.", "arg", "six.three"));
+        assertThat(underTest.getMessage())
+                .isEqualTo(String.format("Argument name '-%s' expects a double but was '%s' .", "arg", "six.three"));
     }
 }

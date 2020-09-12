@@ -224,13 +224,12 @@ class JargsTest {
         String schema = "int#";
         String[] args = {"-int", "six"};
 
-        JargsArgumentException e = new JargsArgumentException(ErrorCode.INVALID_INTEGER, "int", "six");
-
-        // When
-        // Then
-        assertThatThrownBy(() -> new Jargs(schema, args))
-                .isInstanceOf(JargsArgumentException.class)
-                .isEqualToComparingFieldByField(e);
+        try {
+            new Jargs(schema, args);
+        } catch (JargsException e) {
+            assertThat(e.getMessage()).isEqualTo(String.format(
+                        "Argument name '-%s' expects an integer but was '%s' .", "int", "six"));
+        }
     }
 
     @Test

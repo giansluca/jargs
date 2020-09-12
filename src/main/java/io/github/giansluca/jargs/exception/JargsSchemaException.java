@@ -2,7 +2,7 @@ package io.github.giansluca.jargs.exception;
 
 public class JargsSchemaException extends JargsException {
 
-    private ErrorCode errorCode = ErrorCode.OK;
+    private final ErrorCode errorCode;
     private String errorParameter;
 
     public JargsSchemaException(ErrorCode errorCode, String errorParameter) {
@@ -14,10 +14,16 @@ public class JargsSchemaException extends JargsException {
         return errorCode;
     }
 
-    public String getErrorMessage() throws Exception {
+    public String getErrorParameter() {
+        return errorParameter;
+    }
+
+    public void setErrorParameter(String errorParameter) {
+        this.errorParameter = errorParameter;
+    }
+
+    public String getMessage() {
         switch (errorCode) {
-            case OK:
-                throw new Exception("TILT: Should not get here.");
             case INVALID_SCHEMA_ELEMENT_TYPE:
                 return String.format("'%s' is not a valid schema element type.", errorParameter);
             case EMPTY_SCHEMA_ELEMENT_NAME:
