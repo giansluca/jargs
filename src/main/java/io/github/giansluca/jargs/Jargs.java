@@ -10,19 +10,27 @@ import java.util.*;
 
 public class Jargs {
 
-    private Set<String> argsFound;
-    private Map<String, ArgumentMarshaler> marshalers;
-    private ListIterator<String> currentArgument;
+    private final Set<String> argsFound;
+    private final Map<String, ArgumentMarshaler> marshalers;
+    private final ListIterator<String> currentArgument;
 
     public Jargs(String schema, String[] args) throws JargsException {
-        if (schema == null || args == null)
-            throw new JargsException("FATAL: Not null violation error");
+        validateInput(schema, args);
 
         argsFound = new HashSet<>();
         marshalers = new HashMap<>();
+        currentArgument = Arrays.asList(args).listIterator();
 
         parseSchema(schema);
-        parseArgumentStrings(Arrays.asList(args));
+        parseArgumentStrings();
+    }
+
+    private void validateInput(String schema, String[] args) throws JargsException {
+        if (schema == null || args == null)
+            throw new JargsException("FATAL: Not null violation error");
+
+        if (schema.isBlank() || args.length == 0)
+            throw new JargsException("FATAL: Not blank violation error");
     }
 
     private void parseSchema(String schema) throws JargsException {
@@ -46,20 +54,25 @@ public class Jargs {
         else if (elementType.equals("@"))
             marshalers.put(elementName, new DoubleArgumentMarshaler());
         else
-            throw new JargsSchemaException(ErrorCode.INVALID_SCHEMA_ELEMENT_TYPE, elementType);
+            throw new JargsSchemaException(
+                    ErrorCode.INVALID_SCHEMA_ELEMENT_TYPE, elementType);
     }
 
-    private void validateSchemaElement(String elementName, String elementType) throws JargsException {
+    private void validateSchemaElement(
+            String elementName, String elementType) throws JargsException {
+
         if (elementName.isBlank())
-            throw new JargsSchemaException(ErrorCode.EMPTY_SCHEMA_ELEMENT_NAME, elementName+elementType);
+            throw new JargsSchemaException(
+                    ErrorCode.EMPTY_SCHEMA_ELEMENT_NAME, elementName+elementType);
 
         for (char c : elementName.toCharArray())
             if (!Character.isLetter(c))
-                throw new JargsSchemaException(ErrorCode.INVALID_SCHEMA_ELEMENT_NAME, elementName);
+                throw new JargsSchemaException(
+                        ErrorCode.INVALID_SCHEMA_ELEMENT_NAME, elementName);
     }
 
-    private void parseArgumentStrings(List<String> argsList) throws JargsException {
-        for (currentArgument = argsList.listIterator(); currentArgument.hasNext(); ) {
+    private void parseArgumentStrings() throws JargsException {
+        while(currentArgument.hasNext()) {
             String argument = currentArgument.next();
             if(argument.startsWith("-"))
                 parseArgument(argument.substring(1));

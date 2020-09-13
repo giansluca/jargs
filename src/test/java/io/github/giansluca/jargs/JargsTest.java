@@ -28,7 +28,7 @@ class JargsTest {
     void isShouldThrowIfSchemaIsNull() {
         // Given
         String schema = null;
-        String[] args = {};
+        String[] args = {"-arg"};
 
         // When
         // Then
@@ -40,7 +40,7 @@ class JargsTest {
     @Test
     void isShouldThrowIfArgumentArrayIsNull() {
         // Given
-        String schema = "";
+        String schema = "int#";
         String[] args = null;
 
         // When
@@ -51,23 +51,36 @@ class JargsTest {
     }
 
     @Test
-    void itShouldDoNothingIfNoSchemaAndNoArguments() throws Exception {
+    void itShouldThrowIfSchemaIsBlank() {
         // Given
         String schema = "";
+        String[] args = {"-test", "value"};
+
+        // When
+        // Then
+        assertThatThrownBy(() -> new Jargs(schema, args))
+                .isInstanceOf(JargsException.class)
+                .hasMessageContaining("FATAL: Not blank violation error");
+    }
+
+    @Test
+    void itShouldThrowIfArgumentArrayIsEmpty() {
+        // Given
+        String schema = "test#";
         String[] args = new String[0];
 
         // When
-        underTest = new Jargs(schema, args);
-
         // Then
-        assertThat(underTest.cardinality()).isEqualTo(0);
+        assertThatThrownBy(() -> new Jargs(schema, args))
+                .isInstanceOf(JargsException.class)
+                .hasMessageContaining("FATAL: Not blank violation error");
     }
 
     @Test
     void isShouldThrowIfSchemaHasNotElementName() {
         // Given
         String schema = "*";
-        String[] args = new String[0];
+        String[] args = {"-arg", "test"};
 
         JargsSchemaException e = new JargsSchemaException(ErrorCode.EMPTY_SCHEMA_ELEMENT_NAME, "*");
 
@@ -76,38 +89,6 @@ class JargsTest {
         assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsSchemaException.class)
                 .isEqualToComparingFieldByField(e);
-    }
-
-    @Test
-    void itShouldThrowIfNoSchemaAndOneArgumentName() throws Exception {
-        // Given
-        String schema = "";
-        String[] args = {"-test"};
-
-        try {
-            // When
-            underTest = new Jargs(schema, args);
-        } catch (JargsArgumentException e) {
-            // Then
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.UNEXPECTED_ARGUMENT);
-            assertThat(e.getErrorArgumentName()).isEqualTo("test");
-        }
-    }
-
-    @Test
-    void itShouldThrowIfNoSchemaAndMultipleArgumentsName() throws Exception {
-        // Given
-        String schema = "";
-        String[] args = {"-first", "-second"};
-
-        try {
-            // When
-            underTest = new Jargs(schema, args);
-        } catch (JargsArgumentException e) {
-            // Then
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.UNEXPECTED_ARGUMENT);
-            assertThat(e.getErrorArgumentName()).isEqualTo("first");
-        }
     }
 
     @Test
@@ -130,7 +111,7 @@ class JargsTest {
     void itShouldThrowIfSchemaElementContainsOtherThanALetter() {
         // Given
         String schema = "_test*";
-        String[] args = new String[0];
+        String[] args = {"-test", "value"};
 
         JargsSchemaException e = new JargsSchemaException(ErrorCode.INVALID_SCHEMA_ELEMENT_NAME, "_test");
 
@@ -145,7 +126,7 @@ class JargsTest {
     void itShouldThrowIfSchemaElementFormatIsInvalid() {
         // Given
         String schema = "test&";
-        String[] args = new String[0];
+        String[] args = {"-test", "value"};
 
         JargsSchemaException e = new JargsSchemaException(ErrorCode.INVALID_SCHEMA_ELEMENT_TYPE, "&");
 
