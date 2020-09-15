@@ -4,21 +4,21 @@ Jargs argument parser.
     java -jar example.jar -first first-string -second 2 -third -forth 4.44
     
     
-    public static void main(String[] args) {
-        String schema = "first*, second#, third%, forth@";
-        Jargs arguments = null;
+        public static void main(String[] args) {
+            String schema = "first*, second#, third%, forth@";
+            Jargs arguments = null;
          
-        try {
-            arguments = new Jargs(schema, args);
-        } catch (JargsException e) {
-            e.printStackTrace();
+            try {
+                arguments = new Jargs(schema, args);
+            } catch (JargsException e) {
+                e.printStackTrace();
+            }
+         
+            String stringValue = arguments.getString("first");
+            int intValue = arguments.getInt("second");
+            boolean boolValue = arguments.getBoolean("third");
+            double doubleValue = arguments.getDouble("forth");   
         }
-         
-        String stringValue = arguments.getString("first");
-        int intValue = arguments.getInt("second");
-        boolean boolValue = arguments.getBoolean("third");
-        double doubleValue = arguments.getDouble("forth");   
-    }
     
 - Types:\
     % : boolean\
