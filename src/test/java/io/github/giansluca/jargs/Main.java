@@ -5,7 +5,7 @@ import io.github.giansluca.jargs.exception.JargsException;
 public class Main {
 
     public static void main(String[] args) {
-        String schema = "first, second#, third%, forth@";
+        String schema = "first*, second#, third%, forth@";
         Jargs arguments = null;
 
         try {
@@ -18,5 +18,8 @@ public class Main {
         int intValue = arguments.getInt("second");
         boolean boolValue = arguments.getBoolean("third");
         double doubleValue = arguments.getDouble("forth");
+
+        System.out.println(
+                String.format("%s, %d, %b, %f", stringValue, intValue, boolValue, doubleValue));
     }
 }

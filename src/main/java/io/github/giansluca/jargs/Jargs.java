@@ -45,17 +45,23 @@ public class Jargs {
 
         validateSchemaElement(elementName, elementType);
 
-        if (elementType.equals("%"))
-            marshalers.put(elementName, new BooleanArgumentMarshaler());
-        else if (elementType.equals("*"))
-            marshalers.put(elementName, new StringArgumentMarshaler());
-        else if (elementType.equals("#"))
-            marshalers.put(elementName, new IntegerArgumentMarshaler());
-        else if (elementType.equals("@"))
-            marshalers.put(elementName, new DoubleArgumentMarshaler());
-        else
-            throw new JargsSchemaException(
-                    ErrorCode.INVALID_SCHEMA_ELEMENT_TYPE, elementType);
+        switch (elementType) {
+            case "%":
+                marshalers.put(elementName, new BooleanArgumentMarshaler());
+                break;
+            case "*":
+                marshalers.put(elementName, new StringArgumentMarshaler());
+                break;
+            case "#":
+                marshalers.put(elementName, new IntegerArgumentMarshaler());
+                break;
+            case "@":
+                marshalers.put(elementName, new DoubleArgumentMarshaler());
+                break;
+            default:
+                throw new JargsSchemaException(
+                        ErrorCode.INVALID_SCHEMA_ELEMENT_TYPE, elementType);
+        }
     }
 
     private void validateSchemaElement(

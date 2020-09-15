@@ -20,7 +20,7 @@ Jargs argument parser.
             double doubleValue = arguments.getDouble("forth");   
         }
     
-- Types:\
+- Data types:\
     % : boolean\
     \* : String\
     \# : int\
