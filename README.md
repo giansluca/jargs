@@ -5,7 +5,6 @@ Jargs argument parser.
     
     
     public static void main(String[] args) {
-         
          String schema = "first*, second#, third%, forth@";
          Jargs arguments = null;
          
