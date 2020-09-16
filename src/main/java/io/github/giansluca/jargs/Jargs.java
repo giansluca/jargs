@@ -26,11 +26,8 @@ public class Jargs {
     }
 
     private void validateInput(String schema, String[] args) throws JargsException {
-        if (schema == null || args == null)
-            throw new JargsException("FATAL: Not null violation error");
-
-        if (schema.isBlank() || args.length == 0)
-            throw new JargsException("FATAL: Not blank violation error");
+        if (schema == null || schema.isBlank())
+            throw new JargsException("FATAL: null or empty schema violation.");
     }
 
     private void parseSchema(String schema) throws JargsException {
