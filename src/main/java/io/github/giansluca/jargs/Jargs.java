@@ -15,7 +15,7 @@ public class Jargs {
     private final ListIterator<String> currentArgument;
 
     public Jargs(String schema, String[] args) throws JargsException {
-        validateInput(schema, args);
+        validateInput(schema);
 
         argsFound = new HashSet<>();
         marshalers = new HashMap<>();
@@ -25,7 +25,7 @@ public class Jargs {
         parseArgumentStrings();
     }
 
-    private void validateInput(String schema, String[] args) throws JargsException {
+    private void validateInput(String schema) throws JargsException {
         if (schema == null || schema.isBlank())
             throw new JargsException("FATAL: null or empty schema violation.");
     }
