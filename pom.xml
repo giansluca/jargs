@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.giansluca</groupId>
     <artifactId>jargs</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.4-SNAPSHOT</version>
 
     <name>Jargs</name>
     <description>Java arguments parser</description>
     <url>https://github.com/giansluca/jargs</url>
 
     <scm>
-        <connection>scm:git:git@github.com:giansluca/jargs.git</connection>
-        <developerConnection>scm:git:git@github.com:giansluca/jargs.git</developerConnection>
-        <url>scm:git:git@github.com:giansluca/jargs.git</url>
-        <tag>v1.0.4</tag>
+        <connection>scm:git:git://github.com/giansluca/jargs.git</connection>
+        <developerConnection>scm:git:ssh://github.com:giansluca/jargs.git</developerConnection>
+        <url>https://github.com/giansluca/jargs</url>
     </scm>
 
     <developers>
@@ -127,34 +127,34 @@
                 </executions>
             </plugin>
 
-            <!--            <plugin>-->
-            <!--                <groupId>org.apache.maven.plugins</groupId>-->
-            <!--                <artifactId>maven-javadoc-plugin</artifactId>-->
-            <!--                <version>3.4.1</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <id>attach-javadocs</id>-->
-            <!--                        <goals>-->
-            <!--                            <goal>jar</goal>-->
-            <!--                        </goals>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-javadoc-plugin</artifactId>-->
+<!--                <version>3.4.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>attach-javadocs</id>-->
+<!--                        <goals>-->
+<!--                            <goal>jar</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
-            <!--            <plugin>-->
-            <!--                <groupId>org.apache.maven.plugins</groupId>-->
-            <!--                <artifactId>maven-gpg-plugin</artifactId>-->
-            <!--                <version>3.0.1</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <id>sign-artifacts</id>-->
-            <!--                        <phase>verify</phase>-->
-            <!--                        <goals>-->
-            <!--                            <goal>sign</goal>-->
-            <!--                        </goals>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <packaging>jar</packaging>
