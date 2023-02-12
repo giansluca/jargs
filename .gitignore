@@ -1,5 +1,11 @@
-.idea/
-target/
-jargs.iml
 .DS_Store
-pom.xml.versionsBackup
+
+### IntelliJ IDEA ###
+target/
+.idea
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/
