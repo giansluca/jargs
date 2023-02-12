@@ -12,9 +12,9 @@
     <url>https://github.com/giansluca/jargs</url>
 
     <scm>
-        <connection>scm:git:git://github.com/giansluca/jargs.git</connection>
-        <developerConnection>scm:git:ssh://github.com:giansluca/jargs.git</developerConnection>
-        <url>scm:git:ssh://github.com:giansluca/jargs.git</url>
+        <connection>scm:git:git@github.com:giansluca/jargs.git</connection>
+        <developerConnection>scm:git:git@github.com:giansluca/jargs.git</developerConnection>
+        <url>scm:git:git@github.com:giansluca/jargs.git</url>
         <tag>v1.0.4</tag>
     </scm>
 
