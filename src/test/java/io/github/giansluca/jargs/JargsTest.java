@@ -37,19 +37,6 @@ class JargsTest {
                 .hasMessageContaining("FATAL: null or empty schema violation.");
     }
 
-    //@Test
-    void isShouldThrowIfArgumentArrayIsNull() {
-        // Given
-        String schema = "int#";
-        String[] args = null;
-
-        // When
-        // Then
-        assertThatThrownBy(() -> new Jargs(schema, args))
-                .isInstanceOf(JargsException.class)
-                .hasMessageContaining("FATAL: Not null violation error");
-    }
-
     @Test
     void itShouldThrowIfSchemaIsBlank() {
         // Given
@@ -61,19 +48,6 @@ class JargsTest {
         assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsException.class)
                 .hasMessageContaining("FATAL: null or empty schema violation.");
-    }
-
-    //@Test
-    void itShouldThrowIfArgumentArrayIsEmpty() {
-        // Given
-        String schema = "test#";
-        String[] args = new String[0];
-
-        // When
-        // Then
-        assertThatThrownBy(() -> new Jargs(schema, args))
-                .isInstanceOf(JargsException.class)
-                .hasMessageContaining("FATAL: Not blank violation error");
     }
 
     @Test
@@ -88,7 +62,8 @@ class JargsTest {
         // Then
         assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsSchemaException.class)
-                .isEqualToComparingFieldByField(e);
+                .usingRecursiveComparison()
+                .isEqualTo(e);
     }
 
     @Test
@@ -102,8 +77,10 @@ class JargsTest {
         // When
         // Then
         assertThatThrownBy(() -> underTest = new Jargs(schema, args))
-            .isInstanceOf(JargsArgumentException.class)
-            .isEqualToComparingFieldByField(e);
+                .isInstanceOf(JargsArgumentException.class)
+                .usingRecursiveComparison()
+                .isEqualTo(e);
+
     }
 
 
@@ -119,7 +96,8 @@ class JargsTest {
         // Then
         assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsSchemaException.class)
-                .isEqualToComparingFieldByField(e);
+                .usingRecursiveComparison()
+                .isEqualTo(e);
     }
 
     @Test
@@ -134,7 +112,8 @@ class JargsTest {
         // Then
         assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsSchemaException.class)
-                .isEqualToComparingFieldByField(e);
+                .usingRecursiveComparison()
+                .isEqualTo(e);
     }
 
     @Test
@@ -149,7 +128,8 @@ class JargsTest {
         // Then
         assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsArgumentException.class)
-                .isEqualToComparingFieldByField(e);
+                .usingRecursiveComparison()
+                .isEqualTo(e);
     }
 
     @Test
@@ -179,7 +159,8 @@ class JargsTest {
         // Then
         assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsArgumentException.class)
-                .isEqualToComparingFieldByField(e);
+                .usingRecursiveComparison()
+                .isEqualTo(e);
     }
 
     @Test
@@ -209,7 +190,7 @@ class JargsTest {
             new Jargs(schema, args);
         } catch (JargsException e) {
             assertThat(e.getMessage()).isEqualTo(String.format(
-                        "Argument name '-%s' expects an integer but was '%s' .", "int", "six"));
+                    "Argument name '-%s' expects an integer but was '%s' .", "int", "six"));
         }
     }
 
@@ -225,7 +206,8 @@ class JargsTest {
         // Then
         assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsArgumentException.class)
-                .isEqualToComparingFieldByField(e);
+                .usingRecursiveComparison()
+                .isEqualTo(e);
     }
 
     @Test
@@ -255,7 +237,8 @@ class JargsTest {
         // Then
         assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsArgumentException.class)
-                .isEqualToComparingFieldByField(e);
+                .usingRecursiveComparison()
+                .isEqualTo(e);
     }
 
     @Test
@@ -270,7 +253,8 @@ class JargsTest {
         // Then
         assertThatThrownBy(() -> new Jargs(schema, args))
                 .isInstanceOf(JargsArgumentException.class)
-                .isEqualToComparingFieldByField(e);
+                .usingRecursiveComparison()
+                .isEqualTo(e);
     }
 
     @Test

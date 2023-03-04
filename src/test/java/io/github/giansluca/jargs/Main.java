@@ -11,7 +11,7 @@ public class Main {
         try {
             arguments = new Jargs(schema, args);
         } catch (JargsException e) {
-            e.printStackTrace();
+            throw new IllegalStateException();
         }
 
         String stringValue = arguments.getString("first");
@@ -19,7 +19,6 @@ public class Main {
         boolean boolValue = arguments.getBoolean("third");
         double doubleValue = arguments.getDouble("forth");
 
-        System.out.println(
-                String.format("%s, %d, %b, %f", stringValue, intValue, boolValue, doubleValue));
+        System.out.printf("%s, %d, %b, %f%n", stringValue, intValue, boolValue, doubleValue);
     }
 }
