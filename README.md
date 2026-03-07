@@ -2,8 +2,7 @@ Jargs argument parser.
 
 - Usage example:\
     java -jar example.jar -first first-string -second 2 -third -forth 4.44
-    
-    
+
         public static void main(String[] args) {
             String schema = "first*, second#, third%, forth@";
             Jargs arguments = null;
